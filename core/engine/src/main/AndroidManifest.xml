@@ -1,2 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Foreground service -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+
+    <!-- Boot receiver -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <!-- Notifications (action: DisplayNotification) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- Vibrate (action: Vibrate) -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <!-- App usage stats (trigger: AppLaunch) -->
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
+        android:maxSdkVersion="35" />
+
+    <!-- Alarms for DayTime trigger -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
+    <application>
+        <service
+            android:name="com.openmacro.core.engine.service.MacroService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Automation engine that monitors triggers and executes macro actions in the background" />
+        </service>
+
+        <receiver
+            android:name="com.openmacro.core.engine.service.BootReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name="com.openmacro.core.engine.trigger.DayTimeReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.openmacro.DAY_TIME_TRIGGER" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>

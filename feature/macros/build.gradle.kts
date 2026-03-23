@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
 }
@@ -32,6 +33,8 @@ android {
 dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:model"))
+    implementation(project(":core:database"))
+    implementation(project(":core:engine"))
     implementation(project(":core:ui"))
 
     implementation(platform(libs.compose.bom))
@@ -47,6 +50,8 @@ dependencies {
 
     implementation(libs.lifecycle.viewmodel.compose)
     implementation(libs.lifecycle.runtime.compose)
+
+    implementation(libs.serialization.json)
 
     debugImplementation(libs.compose.ui.tooling)
 

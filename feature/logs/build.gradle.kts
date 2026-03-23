@@ -32,6 +32,7 @@ android {
 dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:model"))
+    implementation(project(":core:database"))
     implementation(project(":core:ui"))
 
     implementation(platform(libs.compose.bom))
@@ -39,6 +40,7 @@ dependencies {
     implementation(libs.compose.ui.graphics)
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.compose.material3)
+    implementation(libs.compose.material.icons)
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)

@@ -52,3 +52,15 @@ JAVA_HOME="/c/Program Files/Android/Android Studio/jbr" ./gradlew assembleDebug
 *Notes taken after finishing the first milestone (Domain Model & Database).*
 
 - `MacroRepository.saveMacroWithDetails()` does a delete-then-reinsert for child entities (triggers, actions, constraints). This means child IDs change on every save. If we ever need stable IDs — e.g., for undo/redo, referencing specific actions from flow control, or syncing — we'll want to switch to a diff-based upsert instead. Fine for now.
+
+## Milestone 2 Notes
+*Notes taken after finishing Milestone 2 (Macro Engine Core + First Triggers/Actions).*
+
+- **Engine architecture:** `MacroDispatcher` is the central orchestrator. It observes enabled macros via Flow, starts/stops `TriggerMonitor` instances as macros are enabled/disabled, and routes `TriggerEvent`s to the `ActionExecutor`.
+- **Registry pattern works well:** `TriggerRegistry` and `ActionRegistry` use Hilt multibindings (`Set<TriggerMonitor>`, `Set<ActionHandler>`). Adding a new trigger/action = implement the interface + add one `@Binds @IntoSet` line in `EngineModule`.
+- **BroadcastReceiver lifecycle:** Screen, power, and battery monitors register receivers in `start()` but unregistration relies on the service stopping (context destruction). If we ever need to unregister explicitly, we'll need to hold the context reference in each monitor.
+- **DayTime trigger uses AlarmManager** with `setRepeating()`. This won't be exact on newer Android versions (Doze). If precision matters, we'll need `setExactAndAllowWhileIdle()` + re-scheduling after each alarm.
+- **AppLaunch trigger polls UsageStatsManager** every 2 seconds. Requires the user to grant PACKAGE_USAGE_STATS via system settings (not a runtime permission dialog). We'll need a guided setup flow for this in a future milestone.
+- **MacroService** is a foreground service with `specialUse` type. It self-stops when no macros are enabled.
+- **Test macro flow:** The macros screen has a temporary FAB that creates a "Screen On → Notify" test macro. This will be replaced by the full editor in Milestone 3.
+- **No constraint evaluation yet** — that's Milestone 4. All enabled macros fire when their trigger matches.
