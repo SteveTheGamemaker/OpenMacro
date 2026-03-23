@@ -23,10 +23,12 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.openmacro.feature.logs.LogsScreen
 import com.openmacro.feature.macros.MacrosScreen
+import com.openmacro.feature.macros.editor.MacroEditorScreen
 import com.openmacro.feature.settings.SettingsScreen
 import kotlinx.serialization.Serializable
 
 @Serializable data object MacrosRoute
+@Serializable data class MacroEditorRoute(val macroId: Long = -1L)
 @Serializable data object LogsRoute
 @Serializable data object SettingsRoute
 
@@ -79,7 +81,17 @@ fun OpenMacroApp() {
             startDestination = MacrosRoute,
             modifier = Modifier.padding(innerPadding),
         ) {
-            composable<MacrosRoute> { MacrosScreen() }
+            composable<MacrosRoute> {
+                MacrosScreen(
+                    onCreateMacro = { navController.navigate(MacroEditorRoute()) },
+                    onEditMacro = { macroId -> navController.navigate(MacroEditorRoute(macroId)) },
+                )
+            }
+            composable<MacroEditorRoute> {
+                MacroEditorScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                )
+            }
             composable<LogsRoute> { LogsScreen() }
             composable<SettingsRoute> { SettingsScreen() }
         }

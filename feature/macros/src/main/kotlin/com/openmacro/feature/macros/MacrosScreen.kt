@@ -1,6 +1,10 @@
 package com.openmacro.feature.macros
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,16 +24,20 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -39,6 +47,8 @@ import com.openmacro.core.model.MacroWithDetails
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MacrosScreen(
+    onCreateMacro: () -> Unit = {},
+    onEditMacro: (Long) -> Unit = {},
     viewModel: MacrosViewModel = hiltViewModel(),
 ) {
     val macros by viewModel.macros.collectAsStateWithLifecycle()
@@ -49,8 +59,8 @@ fun MacrosScreen(
             TopAppBar(title = { Text("Macros") })
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { viewModel.createTestMacro() }) {
-                Icon(Icons.Default.Add, contentDescription = "Create test macro")
+            FloatingActionButton(onClick = onCreateMacro) {
+                Icon(Icons.Default.Add, contentDescription = "Create macro")
             }
         },
     ) { innerPadding ->
@@ -75,7 +85,7 @@ fun MacrosScreen(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Tap + to create a test macro",
+                    text = "Tap + to create your first macro",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -89,8 +99,9 @@ fun MacrosScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 items(macros, key = { it.macro.id }) { macro ->
-                    MacroItem(
+                    SwipeToDismissMacroItem(
                         macro = macro,
+                        onClick = { onEditMacro(macro.macro.id) },
                         onToggle = { enabled ->
                             viewModel.toggleMacro(macro.macro.id, enabled, context)
                         },
@@ -102,14 +113,66 @@ fun MacrosScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MacroItem(
+private fun SwipeToDismissMacroItem(
     macro: MacroWithDetails,
+    onClick: () -> Unit,
     onToggle: (Boolean) -> Unit,
     onDelete: () -> Unit,
 ) {
+    val dismissState = rememberSwipeToDismissBoxState()
+
+    LaunchedEffect(dismissState.currentValue) {
+        if (dismissState.currentValue == SwipeToDismissBoxValue.EndToStart) {
+            onDelete()
+        }
+    }
+
+    SwipeToDismissBox(
+        state = dismissState,
+        backgroundContent = {
+            val color by animateColorAsState(
+                targetValue = when (dismissState.targetValue) {
+                    SwipeToDismissBoxValue.EndToStart -> MaterialTheme.colorScheme.errorContainer
+                    else -> Color.Transparent
+                },
+                label = "swipe-bg",
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(color)
+                    .padding(horizontal = 20.dp),
+                contentAlignment = Alignment.CenterEnd,
+            ) {
+                Icon(
+                    Icons.Default.Delete,
+                    contentDescription = "Delete",
+                    tint = MaterialTheme.colorScheme.onErrorContainer,
+                )
+            }
+        },
+        enableDismissFromStartToEnd = false,
+    ) {
+        MacroItem(
+            macro = macro,
+            onClick = onClick,
+            onToggle = onToggle,
+        )
+    }
+}
+
+@Composable
+private fun MacroItem(
+    macro: MacroWithDetails,
+    onClick: () -> Unit,
+    onToggle: (Boolean) -> Unit,
+) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
     ) {
         Row(
             modifier = Modifier
@@ -129,13 +192,6 @@ private fun MacroItem(
                 )
             }
             Spacer(modifier = Modifier.width(8.dp))
-            IconButton(onClick = onDelete) {
-                Icon(
-                    Icons.Default.Delete,
-                    contentDescription = "Delete",
-                    tint = MaterialTheme.colorScheme.error,
-                )
-            }
             Switch(
                 checked = macro.macro.isEnabled,
                 onCheckedChange = onToggle,
