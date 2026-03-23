@@ -35,7 +35,7 @@ Each trigger/action/constraint type is registered via a **registry** (`TypeId �
 ## Progress
 
 - [x] **Milestone 0 — Project Scaffolding**
-- [ ] **Milestone 1 — Domain Model & Database**
+- [x] **Milestone 1 — Domain Model & Database**
 - [ ] **Milestone 2 — Macro Engine Core + First Triggers/Actions**
 - [ ] **Milestone 3 — Macro Editor UI**
 - [ ] **Milestone 4 — Constraints + Variables + Magic Text**
@@ -58,7 +58,7 @@ Each trigger/action/constraint type is registered via a **registry** (`TypeId �
 - Hilt DI, Compose theme (Material 3, light/dark), single-Activity + Compose Navigation
 - Placeholder home screen ("No macros yet")
 
-### Milestone 1 — Domain Model & Database
+### Milestone 1 — Domain Model & Database ✅
 **Goal:** Data foundation.
 - Domain models: `Macro`, `TriggerConfig`, `ActionConfig`, `ConstraintConfig`, `MacroCategory`
 - Sealed classes for `TriggerType`, `ActionType`, `ConstraintType`

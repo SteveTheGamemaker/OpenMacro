@@ -9,3 +9,10 @@ data class Macro(
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis(),
 )
+
+data class MacroWithDetails(
+    val macro: Macro,
+    val triggers: List<TriggerConfig>,
+    val actions: List<ActionConfig>,
+    val constraints: List<ConstraintConfig>,
+)
