@@ -37,7 +37,7 @@ Each trigger/action/constraint type is registered via a **registry** (`TypeId �
 - [x] **Milestone 0 — Project Scaffolding**
 - [x] **Milestone 1 — Domain Model & Database**
 - [x] **Milestone 2 — Macro Engine Core + First Triggers/Actions**
-- [ ] **Milestone 3 — Macro Editor UI**
+- [x] **Milestone 3 — Macro Editor UI**
 - [ ] **Milestone 4 — Constraints + Variables + Magic Text**
 - [ ] **Milestone 5 — Connectivity & Communication Expansion**
 - [ ] **Milestone 6 — Flow Control, Expressions, Action Blocks**

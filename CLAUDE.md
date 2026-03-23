@@ -62,5 +62,16 @@ JAVA_HOME="/c/Program Files/Android/Android Studio/jbr" ./gradlew assembleDebug
 - **DayTime trigger uses AlarmManager** with `setRepeating()`. This won't be exact on newer Android versions (Doze). If precision matters, we'll need `setExactAndAllowWhileIdle()` + re-scheduling after each alarm.
 - **AppLaunch trigger polls UsageStatsManager** every 2 seconds. Requires the user to grant PACKAGE_USAGE_STATS via system settings (not a runtime permission dialog). We'll need a guided setup flow for this in a future milestone.
 - **MacroService** is a foreground service with `specialUse` type. It self-stops when no macros are enabled.
-- **Test macro flow:** The macros screen has a temporary FAB that creates a "Screen On → Notify" test macro. This will be replaced by the full editor in Milestone 3.
 - **No constraint evaluation yet** — that's Milestone 4. All enabled macros fire when their trigger matches.
+
+## Milestone 3 Notes
+*Notes taken after finishing Milestone 3 (Macro Editor UI).*
+
+- **Editor architecture:** `MacroEditorViewModel` holds all state in-memory via `MutableStateFlow<MacroEditorUiState>`. Nothing is persisted until the user taps Save, which calls `saveMacroWithDetails()`. This avoids DB orphans from abandoned edits.
+- **Navigation:** `MacroEditorRoute(macroId: Long = -1L)` — `-1` means new macro, any other value loads existing. The ViewModel reads `macroId` from `SavedStateHandle`.
+- **Type picker pattern:** `TypePickerSheet` is a reusable bottom sheet grid that works for both triggers and actions. Each type is a `TypeItem(id, displayName, icon)`. Only M2-implemented types are shown.
+- **Config editors use JSON round-tripping:** Each editor decodes `configJson` → typed config data class, renders form controls, and re-encodes on every change. Uses `remember(configJson)` so re-decode only happens when the JSON actually changes.
+- **Shared components in `:core:ui`:** `ConfigCard`, `SliderWithLabel`, `DayOfWeekSelector`, `TimePickerDialog`, `AppPickerSheet`. These are reusable for future milestones.
+- **AppPickerSheet** queries launchable apps via `PackageManager.queryIntentActivities()` with `CATEGORY_LAUNCHER`. Includes search filtering and shows app icon + name + package.
+- **Swipe-to-delete** on macro list uses M3 `SwipeToDismissBox` (end-to-start only).
+- **Constraints section** is a visible stub in the editor — users can see it exists but can't add constraints yet (M4).
