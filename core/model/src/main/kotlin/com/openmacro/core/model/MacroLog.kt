@@ -4,6 +4,7 @@ enum class MacroLogStatus {
     SUCCESS,
     FAILURE,
     CANCELLED,
+    CONSTRAINT_NOT_MET,
 }
 
 data class MacroLog(

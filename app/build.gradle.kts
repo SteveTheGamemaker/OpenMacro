@@ -54,6 +54,7 @@ dependencies {
     implementation(project(":feature:macros"))
     implementation(project(":feature:logs"))
     implementation(project(":feature:settings"))
+    implementation(project(":feature:variables"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)

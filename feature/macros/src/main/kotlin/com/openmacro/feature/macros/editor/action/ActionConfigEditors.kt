@@ -20,8 +20,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.openmacro.core.model.config.DeleteVariableConfig
 import com.openmacro.core.model.config.DisplayNotificationConfig
 import com.openmacro.core.model.config.LaunchApplicationConfig
+import com.openmacro.core.model.config.SetVariableConfig
 import com.openmacro.core.model.config.SetVolumeConfig
 import com.openmacro.core.model.config.VibrateConfig
 import com.openmacro.core.model.config.WaitConfig
@@ -210,6 +212,62 @@ fun WaitConfigEditor(
             valueRange = 100f..30000f,
             valueText = if (config.durationMs >= 1000) "${"%.1f".format(config.durationMs / 1000f)}s"
             else "${config.durationMs}ms",
+        )
+    }
+}
+
+@Composable
+fun SetVariableConfigEditor(
+    configJson: String,
+    onConfigChanged: (String) -> Unit,
+) {
+    val config = remember(configJson) {
+        runCatching { json.decodeFromString<SetVariableConfig>(configJson) }
+            .getOrDefault(SetVariableConfig())
+    }
+
+    Column {
+        OutlinedTextField(
+            value = config.variableName,
+            onValueChange = {
+                onConfigChanged(json.encodeToString(SetVariableConfig.serializer(), config.copy(variableName = it)))
+            },
+            label = { Text("Variable name (prefix lv_ for local)") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        OutlinedTextField(
+            value = config.value,
+            onValueChange = {
+                onConfigChanged(json.encodeToString(SetVariableConfig.serializer(), config.copy(value = it)))
+            },
+            label = { Text("Value") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+        )
+    }
+}
+
+@Composable
+fun DeleteVariableConfigEditor(
+    configJson: String,
+    onConfigChanged: (String) -> Unit,
+) {
+    val config = remember(configJson) {
+        runCatching { json.decodeFromString<DeleteVariableConfig>(configJson) }
+            .getOrDefault(DeleteVariableConfig())
+    }
+
+    Column {
+        OutlinedTextField(
+            value = config.variableName,
+            onValueChange = {
+                onConfigChanged(json.encodeToString(DeleteVariableConfig.serializer(), config.copy(variableName = it)))
+            },
+            label = { Text("Variable name") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
         )
     }
 }

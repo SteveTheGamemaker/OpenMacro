@@ -8,6 +8,8 @@ import com.openmacro.core.model.MacroCategory
 import com.openmacro.core.model.MacroLog
 import com.openmacro.core.model.MacroLogStatus
 import com.openmacro.core.model.TriggerConfig
+import com.openmacro.core.model.Variable
+import com.openmacro.core.model.VariableType
 
 // ── Macro ──
 
@@ -137,4 +139,22 @@ fun MacroLog.toEntity() = MacroLogEntity(
     completedAt = completedAt,
     status = status.name,
     errorMessage = errorMessage,
+)
+
+// ── Variable ──
+
+fun VariableEntity.toDomain() = Variable(
+    id = id,
+    name = name,
+    type = VariableType.valueOf(type),
+    valueJson = valueJson,
+    isGlobal = isGlobal,
+)
+
+fun Variable.toEntity() = VariableEntity(
+    id = id,
+    name = name,
+    type = type.name,
+    valueJson = valueJson,
+    isGlobal = isGlobal,
 )

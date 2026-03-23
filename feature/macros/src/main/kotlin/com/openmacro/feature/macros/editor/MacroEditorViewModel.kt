@@ -7,6 +7,8 @@ import com.openmacro.core.database.repository.MacroRepository
 import com.openmacro.core.model.ActionConfig
 import com.openmacro.core.model.ActionType
 import com.openmacro.core.model.ConstraintConfig
+import com.openmacro.core.model.ConstraintType
+import com.openmacro.core.model.LogicOperator
 import com.openmacro.core.model.Macro
 import com.openmacro.core.model.TriggerConfig
 import com.openmacro.core.model.TriggerType
@@ -135,6 +137,46 @@ class MacroEditorViewModel @Inject constructor(
             val item = mutable.removeAt(fromIndex)
             mutable.add(toIndex, item)
             state.copy(actions = mutable.mapIndexed { i, a -> a.copy(sortOrder = i) })
+        }
+    }
+
+    fun addConstraint(type: ConstraintType, configJson: String = "{}") {
+        _uiState.update { state ->
+            state.copy(
+                constraints = state.constraints + ConstraintConfig(
+                    macroId = state.macroId ?: 0,
+                    typeId = type.typeId,
+                    configJson = configJson,
+                    logicOperator = if (state.constraints.isEmpty()) LogicOperator.AND else LogicOperator.AND,
+                    sortOrder = state.constraints.size,
+                ),
+            )
+        }
+    }
+
+    fun removeConstraint(index: Int) {
+        _uiState.update { state ->
+            state.copy(constraints = state.constraints.toMutableList().apply { removeAt(index) })
+        }
+    }
+
+    fun updateConstraintConfig(index: Int, configJson: String) {
+        _uiState.update { state ->
+            state.copy(
+                constraints = state.constraints.toMutableList().apply {
+                    set(index, get(index).copy(configJson = configJson))
+                },
+            )
+        }
+    }
+
+    fun updateConstraintLogicOperator(index: Int, operator: LogicOperator) {
+        _uiState.update { state ->
+            state.copy(
+                constraints = state.constraints.toMutableList().apply {
+                    set(index, get(index).copy(logicOperator = operator))
+                },
+            )
         }
     }
 

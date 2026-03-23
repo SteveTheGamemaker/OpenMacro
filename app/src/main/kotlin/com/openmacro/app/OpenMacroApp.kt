@@ -3,6 +3,7 @@ package com.openmacro.app
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
@@ -25,11 +26,13 @@ import com.openmacro.feature.logs.LogsScreen
 import com.openmacro.feature.macros.MacrosScreen
 import com.openmacro.feature.macros.editor.MacroEditorScreen
 import com.openmacro.feature.settings.SettingsScreen
+import com.openmacro.feature.variables.VariableManagerScreen
 import kotlinx.serialization.Serializable
 
 @Serializable data object MacrosRoute
 @Serializable data class MacroEditorRoute(val macroId: Long = -1L)
 @Serializable data object LogsRoute
+@Serializable data object VariablesRoute
 @Serializable data object SettingsRoute
 
 data class TopLevelDestination(
@@ -41,6 +44,7 @@ data class TopLevelDestination(
 val topLevelDestinations = listOf(
     TopLevelDestination(MacrosRoute, Icons.Default.PlayArrow, "Macros"),
     TopLevelDestination(LogsRoute, Icons.AutoMirrored.Filled.List, "Logs"),
+    TopLevelDestination(VariablesRoute, Icons.Default.Code, "Variables"),
     TopLevelDestination(SettingsRoute, Icons.Default.Settings, "Settings"),
 )
 
@@ -93,6 +97,7 @@ fun OpenMacroApp() {
                 )
             }
             composable<LogsRoute> { LogsScreen() }
+            composable<VariablesRoute> { VariableManagerScreen() }
             composable<SettingsRoute> { SettingsScreen() }
         }
     }

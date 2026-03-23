@@ -4,10 +4,11 @@ import android.content.Context
 import android.util.Log
 import com.openmacro.core.database.repository.MacroRepository
 import com.openmacro.core.engine.action.ActionExecutor
-import com.openmacro.core.engine.trigger.TriggerMonitor
+import com.openmacro.core.engine.constraint.ConstraintEvaluator
 import com.openmacro.core.engine.trigger.TriggerRegistry
-import com.openmacro.core.model.MacroLogStatus
+import com.openmacro.core.engine.variable.VariableStore
 import com.openmacro.core.model.MacroLog
+import com.openmacro.core.model.MacroLogStatus
 import com.openmacro.core.model.MacroWithDetails
 import com.openmacro.core.model.TriggerConfig
 import kotlinx.coroutines.CoroutineScope
@@ -21,16 +22,18 @@ import javax.inject.Singleton
 
 /**
  * Central orchestrator. Observes enabled macros, starts/stops trigger monitors,
- * and dispatches trigger events to the action executor.
+ * evaluates constraints, and dispatches trigger events to the action executor.
  *
  * Web analogy: this is like an Express router — events come in, it matches them
- * to the right handler (macro), and runs the middleware chain (actions).
+ * to the right handler (macro), runs middleware (constraints), then the handler chain (actions).
  */
 @Singleton
 class MacroDispatcher @Inject constructor(
     private val repository: MacroRepository,
     private val triggerRegistry: TriggerRegistry,
     private val actionExecutor: ActionExecutor,
+    private val constraintEvaluator: ConstraintEvaluator,
+    private val variableStore: VariableStore,
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private var appContext: Context? = null
@@ -44,6 +47,8 @@ class MacroDispatcher @Inject constructor(
         if (_isRunning.value) return
         appContext = context.applicationContext
         _isRunning.value = true
+
+        variableStore.initialize()
 
         scope.launch {
             repository.observeEnabledWithDetails().collect { macros ->
@@ -121,12 +126,27 @@ class MacroDispatcher @Inject constructor(
         val logId = repository.insertLog(log)
 
         try {
+            // Evaluate constraints before executing actions
+            if (macro.constraints.isNotEmpty()) {
+                val constraintsMet = constraintEvaluator.evaluate(macro.constraints, context)
+                if (!constraintsMet) {
+                    repository.completeLog(
+                        id = logId,
+                        completedAt = System.currentTimeMillis(),
+                        status = MacroLogStatus.CONSTRAINT_NOT_MET.name,
+                    )
+                    Log.d(TAG, "Macro '${macro.macro.name}' constraints not met, skipping")
+                    return
+                }
+            }
+
             val execContext = ExecutionContext(
                 androidContext = context,
                 triggerEvent = event,
                 logId = logId,
                 macroId = macro.macro.id,
                 macroName = macro.macro.name,
+                variableStore = variableStore,
             )
 
             actionExecutor.execute(macro.actions, execContext)

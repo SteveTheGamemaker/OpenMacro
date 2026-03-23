@@ -75,3 +75,18 @@ JAVA_HOME="/c/Program Files/Android/Android Studio/jbr" ./gradlew assembleDebug
 - **AppPickerSheet** queries launchable apps via `PackageManager.queryIntentActivities()` with `CATEGORY_LAUNCHER`. Includes search filtering and shows app icon + name + package.
 - **Swipe-to-delete** on macro list uses M3 `SwipeToDismissBox` (end-to-start only).
 - **Constraints section** is a visible stub in the editor — users can see it exists but can't add constraints yet (M4).
+
+## Milestone 4 Notes
+*Notes taken after finishing Milestone 4 (Constraints + Variables + Magic Text).*
+
+- **Constraint engine follows registry pattern:** `ConstraintChecker` interface + `ConstraintRegistry` + `ConstraintEvaluator`, same as triggers/actions. Adding a new constraint = implement `ConstraintChecker` + add `@Binds @IntoSet` in `EngineModule`.
+- **ConstraintEvaluator uses flat sequential logic:** Constraints are sorted by `sortOrder`. First constraint seeds the result, subsequent ones combine using their `logicOperator` (AND/OR/XOR/NOT). NOT inverts the individual result then ANDs with the running result. Empty constraint list returns `true`.
+- **MacroDispatcher now evaluates constraints** before executing actions. If constraints aren't met, the macro is logged with `CONSTRAINT_NOT_MET` status and actions are skipped.
+- **VariableStore** is a singleton with an in-memory `ConcurrentHashMap` backed by Room via `VariableRepository`. Initialized when `MacroDispatcher.start()` is called. Global variables persist; local variables (`lv_` prefix) live only in `ExecutionContext`.
+- **Database migration 1→2** adds the `variables` table with a unique index on `name`.
+- **Magic Text** resolves `{token}` patterns in action `configJson` before handlers see it. Built-in tokens: `battery_level`, `time`, `date`, `device_name`, `macro_name`, `trigger_type`. Variable tokens: `{v_name}` (global), `{lv_name}` (local). Trigger data: `{trigger_key}`. Unknown tokens left as-is.
+- **Magic Text resolves at the JSON level** in `ActionExecutor` — the entire `configJson` string is passed through the resolver before the handler decodes it. This means variable values containing JSON special characters could theoretically break parsing, but for typical string values this works fine.
+- **New `:feature:variables` module** with `VariableManagerScreen` — accessible from the bottom nav as a 4th tab (Macros | Logs | Variables | Settings). CRUD for global variables with name, type, and value.
+- **3 new action handlers:** `SetVariableHandler`, `DeleteVariableHandler`, `ClearVariablesHandler`. Set/Delete use `lv_` prefix convention to distinguish local vs global.
+- **Constraint editor UI** replaces the M3 stub. Each constraint card shows a logic operator dropdown (AND/OR/XOR/NOT) between constraints. All 8 M4 constraint types have config editors.
+- **WiFi constraint uses deprecated APIs** (`WifiManager.connectionInfo`) for SSID matching. Android 10+ restricts SSID access — will need ACCESS_FINE_LOCATION + location enabled for reliable SSID matching. Good enough for now.

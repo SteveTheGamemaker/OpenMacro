@@ -8,12 +8,14 @@ import com.openmacro.core.database.dao.ConstraintConfigDao
 import com.openmacro.core.database.dao.MacroDao
 import com.openmacro.core.database.dao.MacroLogDao
 import com.openmacro.core.database.dao.TriggerConfigDao
+import com.openmacro.core.database.dao.VariableDao
 import com.openmacro.core.database.entity.ActionConfigEntity
 import com.openmacro.core.database.entity.CategoryEntity
 import com.openmacro.core.database.entity.ConstraintConfigEntity
 import com.openmacro.core.database.entity.MacroEntity
 import com.openmacro.core.database.entity.MacroLogEntity
 import com.openmacro.core.database.entity.TriggerConfigEntity
+import com.openmacro.core.database.entity.VariableEntity
 
 @Database(
     entities = [
@@ -23,8 +25,9 @@ import com.openmacro.core.database.entity.TriggerConfigEntity
         ActionConfigEntity::class,
         ConstraintConfigEntity::class,
         MacroLogEntity::class,
+        VariableEntity::class,
     ],
-    version = 1,
+    version = 2,
     exportSchema = true,
 )
 abstract class OpenMacroDatabase : RoomDatabase() {
@@ -34,4 +37,5 @@ abstract class OpenMacroDatabase : RoomDatabase() {
     abstract fun actionConfigDao(): ActionConfigDao
     abstract fun constraintConfigDao(): ConstraintConfigDao
     abstract fun macroLogDao(): MacroLogDao
+    abstract fun variableDao(): VariableDao
 }

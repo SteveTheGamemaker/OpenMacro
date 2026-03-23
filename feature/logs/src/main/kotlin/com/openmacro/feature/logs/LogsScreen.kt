@@ -127,6 +127,10 @@ private fun LogItem(log: MacroLog) {
                     icon = Icons.Default.CheckCircle
                     tint = MaterialTheme.colorScheme.outline
                 }
+                MacroLogStatus.CONSTRAINT_NOT_MET -> {
+                    icon = Icons.Default.CheckCircle
+                    tint = Color(0xFFFF9800)
+                }
             }
             Icon(
                 imageVector = icon,
