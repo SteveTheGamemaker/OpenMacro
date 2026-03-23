@@ -1,8 +1,10 @@
-# OpenMacro
+<div align="center">
 
 ![OpenMacro Logo](openmacro-logo.svg)
 
 # OpenMacro
+
+</div>
 
 A free, open-source macro automation app for Android.
 
