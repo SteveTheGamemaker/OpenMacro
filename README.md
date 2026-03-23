@@ -1,5 +1,9 @@
 # OpenMacro
 
+![OpenMacro Logo](openmacro-logo.svg)
+
+# OpenMacro
+
 A free, open-source macro automation app for Android.
 
 ## What is OpenMacro?
