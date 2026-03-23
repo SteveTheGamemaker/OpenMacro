@@ -1,0 +1,406 @@
+TRIGGERS (~95)
+===============
+
+Connectivity:
+- WiFi state change
+- WiFi SSID transition
+- Bluetooth event
+- Bluetooth beacon
+- Data connectivity change
+- Cell tower change
+- IP address change
+- NFC tag
+- NFC enabled state
+- Hotspot enabled/disabled
+- USB device connect/disconnect
+- USB tethering
+- VPN state
+- Roaming started/stopped
+
+Time/Schedule:
+- Day/time trigger
+- Day of week/month
+- Regular interval
+- Sunrise/sunset
+- Calendar event
+- Stopwatch
+
+Device State:
+- Battery level
+- Battery temperature
+- Battery saver state
+- Power connected/disconnected
+- Device boot
+- Screen on/off
+- Screen unlocked
+- Screen orientation
+- Airplane mode changed
+- Auto rotate changed
+- Dark theme change
+- GPS enabled/disabled
+- Silent mode enabled/disabled
+- Priority mode/Do Not Disturb
+- Fold state
+- Torch on/off
+
+Phone/SMS:
+- Call incoming
+- Call outgoing
+- Call active
+- Call ended
+- Call missed
+- SMS received
+- SMS sent
+- Dial phone number
+
+Apps/Notifications:
+- Application launched/closed
+- App install/remove/update
+- Notification
+- Notification bar button
+- Clipboard change
+- Media button pressed
+- Media track changed
+- Music/sound playing
+- Spotify trigger
+
+Sensors/Physical:
+- Shake device
+- Flip device
+- Proximity sensor
+- Light sensor
+- Activity recognition (walking, driving, still, etc.)
+- Fingerprint gesture
+- Swipe screen
+
+Location:
+- Geofence trigger
+- Location trigger
+
+UI/Interaction:
+- Floating button
+- Widget button
+- Quick settings tile
+- Drawer open/close
+- Shortcut launched
+- UI click
+- Screen content
+- Screenshot content
+- Home button long press
+- Power button long press
+- Power button toggle
+- Volume button press
+- Volume button long press
+
+System/Advanced:
+- Webhook (URL)
+- HTTP server request
+- Intent received
+- Logcat message
+- System log entry
+- System setting change
+- Tasker/Locale plugin
+- Macro enabled
+- Macro finished
+- Variable change
+- Mode change
+- App initialised
+- Accessibility service state
+- Failed login attempt
+- File shared to app
+- Text shared to app
+- Photo taken
+- Popup message
+- Daydream on/off
+- Device docked/undocked
+- SIM card change
+- Sleep
+- Mobile service status
+- Autosync changed
+- Android Wear
+- Empty trigger
+
+
+ACTIONS (~130)
+==============
+
+Connectivity:
+- WiFi configure
+- Bluetooth configure
+- Mobile data on/off
+- Hotspot on/off
+- Airplane mode on/off
+- NFC enable/disable
+- USB tethering
+
+Display/Screen:
+- Brightness
+- Dim screen
+- Screen on/off
+- Force screen rotation
+- Auto rotate on/off
+- Immersive mode
+- Dark theme
+- Set wallpaper
+- Font scale
+- Ambient display
+- Block screen touch
+
+Sound/Volume:
+- Volume change
+- Volume up/down
+- Silent/vibrate off
+- Play/stop sound
+- Speak text
+- Say current time
+- Ringtone configure
+- Set notification sound
+- Vibrate
+- Vibrate enable/disable
+- Speakerphone on/off
+- Show volume popup
+- Control media
+
+Notifications:
+- Display notification
+- Display bubble notification
+- Clear notifications
+- Configure app notifications
+- Notification interaction
+- Notification reply
+- Notification LED enable/disable
+- Restore hidden notifications
+- Heads-up enable/disable
+
+Communication:
+- Send SMS
+- Send email
+- WhatsApp send
+- Make call
+- Call reject
+- Answer call
+- Share text
+- Share location
+- Share last photo
+- Contact via app
+
+Apps:
+- Launch application
+- Launch home screen
+- Launch shortcut
+- Kill application
+- Kill background processes
+- App enable/disable
+- Clear app data
+- Open file
+- Open last photo
+- Open website / HTTP GET
+- Launch and press
+
+UI Interaction:
+- UI interaction (clicks, gestures, swipes, text entry by coordinates or text match)
+- Touch screen
+- Press back button
+- Check text on screen
+- Check text in screenshot
+- Check pixel colour
+- Read screen contents
+- Read screenshot contents
+- Get text from view ID
+
+Variables/Logic:
+- Set variable
+- Delete variable
+- Clear variables
+- Array manipulation
+- Clear dictionary/array entry
+- JSON parse
+- Text manipulation
+- JavaScript code
+- Mathematical expressions
+
+Flow Control:
+- If clause
+- If confirmed then
+- Repeat actions
+- Iterate dictionary/array
+- Break from loop
+- Continue loop
+- Wait before next action
+- Wait until trigger
+- Cancel macro actions
+- Confirm next
+
+Files:
+- File operation (copy/move/delete)
+- Write to file
+- Export log
+- Export macros
+- Open file
+
+App-Specific:
+- Enable/disable macro
+- Enable/disable trigger
+- Enable/disable category
+- Macro run
+- Action block (reusable function)
+- Log event
+- Clear log
+- Set mode
+- Set app icon
+- Set notification text
+- Drawer control
+- App settings
+- Display dialog
+- Option dialog
+- Selection dialog
+- Floating text
+- Floating button configure
+- Overlay bar
+- Animation overlay
+- Display custom scene
+- Configure quick tile
+- Set button bar image
+- Widget button modify
+- Delete macro
+- Disable app
+- Keyboard prompt
+- Voice input
+- Voice search
+
+System:
+- Shell script
+- Send intent
+- HTTP request
+- HTTP server response
+- UDP command
+- System setting
+- Secure settings
+- GPS enable/disable
+- Location mode
+- Force location update
+- Set location update rate
+- Set screen timeout
+- Set screen lock
+- Set digital assistant
+- Keep device awake
+- Reboot/power off
+- Car mode
+- Battery saver
+- Demo mode
+- Expand/collapse status bar
+- Camera enable/disable
+- Autosync on/off
+- Sync account
+- Take picture
+- Take screenshot
+- Record microphone
+- Text from image (OCR)
+- Translate text
+- Clipboard refresh
+- Fill clipboard
+- Connectivity check
+- Locale/Tasker plugin
+- Android Wear
+- Authenticate user
+- Accessibility service
+- Daydream/screensaver on
+- Calendar - add event
+- Alarm clock
+- Android shortcut
+
+
+CONSTRAINTS
+===========
+
+- Battery level (above/below threshold)
+- Time of day
+- Day of week
+- Connected to specific WiFi
+- WiFi enabled/disabled
+- Bluetooth connected/disconnected
+- Application running/not running
+- Screen on/off
+- Screen orientation
+- Headphones inserted/removed
+- Airplane mode
+- Call state (active/idle/ringing)
+- Location/geofence
+- Power connected/disconnected
+- Device rooted
+- ADB hack applied
+- Silent/vibrate mode
+- Priority mode/DND
+- Battery saver state
+- Dark theme
+- Variable value check
+- Trigger fired (which trigger started this macro)
+- Logical operators: AND / OR / XOR / NOT (nestable)
+- Constraints can be applied to entire macros, individual triggers, or individual actions
+
+
+OTHER SYSTEMS
+=============
+
+Variables:
+- Types: boolean, integer, decimal, string, dictionary, array
+- User-defined and system-defined
+- Local variables (scoped to action blocks)
+- Global variables (accessible across all macros)
+
+Magic Text (template variables):
+- Device info: {battery_temp}, {battery_current_now}, {android_version_sdk}, {ram_total}, {ram_available}, {screen_resolution}, {storage_free_internal}, {storage_free_external}
+- Connectivity: {ssid}, {wifi_strength}, {cell_connection_type}, {cell_id}, {ip_address}
+- Time: {year}, {month}, {minute}, {second}, {system_time}, {system_time_ms}, {week_of_year}
+- Communication: {call_name}, {call_number}, {sms_name}, {sms_number}, {sms_message}
+- Notifications: {not_title}, {not_ticker}
+- Other: {shared_text}, {ui_click_text}, {webhook_caller_ip_address}, {webhook_url}
+- Variable references: {lv=variable_name}, dictionary access via {lv=dict[key][subkey]}
+
+Action Blocks:
+- Reusable groups of actions (like functions)
+- Support input parameters and output parameters
+- Local/working variables scoped within the block
+
+Stopwatches:
+- Named timers that can be started, stopped, reset
+- Can be used as triggers or in constraints
+
+Geofences:
+- Named circular zones on a map
+- Used with geofence triggers for enter/exit detection
+
+Macro Structure:
+- Each macro has: 1+ triggers, 1+ actions, 0+ constraints
+- Multiple triggers are OR logic (any one fires the macro)
+- Constraints are AND logic by default (all must be true)
+- Actions execute sequentially by default
+- Async option available for long-running actions
+
+Community/Templates:
+- Shareable macro templates
+- Categories: top new, top rated, newest
+- Import/export macros as files
+
+Backup:
+- Local automatic backups
+- Cloud backups (pro feature)
+- Export macros action for automated backups
+
+Plugins:
+- Third-party app integration
+- Tasker/Locale plugin compatibility
+- Plugin store for discovering compatible apps
+
+Wear OS:
+- Companion app for smartwatch integration
+- Watch complications support
+
+Accessibility Service:
+- Used for UI interaction features (clicking, reading screen)
+- Required for some advanced triggers like UI click and screen content
+
+Root Features:
+- Shell commands
+- Toggle mobile data
+- Some system settings require root or ADB hack
