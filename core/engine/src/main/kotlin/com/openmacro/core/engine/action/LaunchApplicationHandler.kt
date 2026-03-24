@@ -1,5 +1,6 @@
 package com.openmacro.core.engine.action
 
+import android.content.Intent
 import com.openmacro.core.engine.ExecutionContext
 import com.openmacro.core.model.ActionConfig
 import com.openmacro.core.model.config.LaunchApplicationConfig
@@ -17,7 +18,7 @@ class LaunchApplicationHandler @Inject constructor() : ActionHandler {
         val launchIntent = pm.getLaunchIntentForPackage(parsed.packageName)
             ?: throw IllegalArgumentException("No launch intent for package: ${parsed.packageName}")
 
-        launchIntent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+        launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
         ctx.startActivity(launchIntent)
     }
 }

@@ -27,6 +27,10 @@ class RegularIntervalMonitor @Inject constructor() : TriggerMonitor {
         configs: List<TriggerConfig>,
         onTrigger: (TriggerEvent) -> Unit,
     ) {
+        if (jobs.isNotEmpty()) {
+            updateConfigs(configs)
+            return
+        }
         this.configs = configs
         this.callback = onTrigger
         startTimers()

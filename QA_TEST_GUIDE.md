@@ -535,6 +535,17 @@ When done, share results and we'll fix whatever's broken before continuing with 
 - Applied to 6 editors: SMS Received, Incoming Call, Call Ended, Missed Call, Send SMS, Make Call
 - Opens system contact picker, fills in the selected contact's phone number
 
+#### Regular Interval Fix
+- `RegularIntervalMonitor.start()` had no guard against duplicate calls — `refreshTriggers()` stacked coroutine loops causing rapid-fire triggers
+- Added `if (jobs.isNotEmpty())` early return to prevent duplicates
+- Replaced slider UI (too imprecise for wide 5s–1hr range) with number input + Seconds/Minutes/Hours dropdown
+
+#### Launch Application Fix
+- `startActivity()` from a foreground service is blocked on Android 10+ (background activity start restriction)
+- Added `SYSTEM_ALERT_WINDOW` ("Display over other apps") permission — this is an official exemption, same approach as Tasker/MacroDroid
+- When enabling a macro with Launch App / Open Website / Make Call actions, the user is prompted to grant overlay permission if not already granted
+- Once granted, app launching works reliably even when OpenMacro is in the background
+
 #### Roadmap Update
 - Expanded Milestone 6 description with Magic Text picker UI feature
 - Token browser with trigger-specific tokens first, then user variables, then built-in tokens

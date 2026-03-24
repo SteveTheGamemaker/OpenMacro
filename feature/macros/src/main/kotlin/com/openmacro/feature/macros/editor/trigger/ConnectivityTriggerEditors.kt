@@ -6,14 +6,25 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.openmacro.core.model.config.AirplaneModeChangedConfig
 import com.openmacro.core.model.config.BluetoothEventConfig
@@ -251,25 +262,91 @@ fun RegularIntervalConfigEditor(
             .getOrDefault(RegularIntervalConfig())
     }
 
+    val units = listOf("Seconds" to 1_000L, "Minutes" to 60_000L, "Hours" to 3_600_000L)
+    val bestUnit = units.lastOrNull { config.intervalMs >= it.second && config.intervalMs % it.second == 0L } ?: units[0]
+    var selectedUnit by remember(configJson) { mutableStateOf(bestUnit) }
+    var textValue by remember(configJson) { mutableStateOf((config.intervalMs / selectedUnit.second).toString()) }
+
     Column {
-        SliderWithLabel(
-            label = "Interval",
-            value = config.intervalMs.toFloat(),
-            onValueChange = {
-                onConfigChanged(
-                    json.encodeToString(RegularIntervalConfig.serializer(), config.copy(intervalMs = it.toLong()))
-                )
+        Text("Interval", style = MaterialTheme.typography.bodyMedium)
+        Spacer(modifier = Modifier.height(4.dp))
+        IntervalInput(
+            value = textValue,
+            onValueChange = { newText ->
+                textValue = newText
+                val number = newText.toLongOrNull() ?: return@IntervalInput
+                if (number > 0) {
+                    val ms = number * selectedUnit.second
+                    onConfigChanged(json.encodeToString(RegularIntervalConfig.serializer(), config.copy(intervalMs = ms)))
+                }
             },
-            valueRange = 5_000f..3_600_000f,
-            valueText = formatInterval(config.intervalMs),
+            selectedUnit = selectedUnit.first,
+            onUnitSelected = { unitName ->
+                val unit = units.first { it.first == unitName }
+                selectedUnit = unit
+                val number = textValue.toLongOrNull() ?: 1
+                val ms = number * unit.second
+                onConfigChanged(json.encodeToString(RegularIntervalConfig.serializer(), config.copy(intervalMs = ms)))
+            },
+            units = units.map { it.first },
         )
     }
 }
 
-private fun formatInterval(ms: Long): String = when {
-    ms >= 3_600_000 -> "${"%.1f".format(ms / 3_600_000f)}h"
-    ms >= 60_000 -> "${"%.1f".format(ms / 60_000f)}m"
-    else -> "${ms / 1_000}s"
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun IntervalInput(
+    value: String,
+    onValueChange: (String) -> Unit,
+    selectedUnit: String,
+    onUnitSelected: (String) -> Unit,
+    units: List<String>,
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        OutlinedTextField(
+            value = value,
+            onValueChange = { newVal ->
+                if (newVal.all { it.isDigit() }) onValueChange(newVal)
+            },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            singleLine = true,
+            modifier = Modifier.weight(1f),
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = { expanded = it },
+            modifier = Modifier.weight(1f),
+        ) {
+            OutlinedTextField(
+                value = selectedUnit,
+                onValueChange = {},
+                readOnly = true,
+                singleLine = true,
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable),
+            )
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+            ) {
+                units.forEach { unit ->
+                    DropdownMenuItem(
+                        text = { Text(unit) },
+                        onClick = {
+                            expanded = false
+                            onUnitSelected(unit)
+                        },
+                    )
+                }
+            }
+        }
+    }
 }
 
 @Composable

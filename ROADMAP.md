@@ -150,7 +150,12 @@ Each trigger/action/constraint type is registered via a **registry** (`TypeId �
 - **6 system triggers:** Webhook, HttpServerRequest, LogcatMessage, SystemSettingChange, MacroFinished, VariableChange
 - **8 system actions:** ShellScript, SystemSetting, SecureSettings, Reboot, SetScreenTimeout, SetScreenLock, ExpandCollapseStatusBar, DemoMode
 - **4 file actions:** FileOperation, WriteToFile, ExportLog, OpenFile
-- Embedded HTTP server for webhooks
+- **Webhook relay server** (separate project, hosted at `openmacro.oryon.ca` on DigitalOcean):
+  - Each webhook trigger gets a random unique ID — URL shown immediately in editor: `openmacro.oryon.ca/trigger/[random_id]/[trigger_name]`
+  - Request body content passed through as trigger data, available as magic text in actions
+  - Optional IP whitelist per webhook for security
+  - Server receives HTTP requests and relays to device via FCM/WebSocket
+  - Python backend — co-developed by Jonah (he knows backend/API dev)
 
 ### Milestone 11 — Polish, Backup, Settings
 **Goal:** Production quality.

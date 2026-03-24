@@ -1,6 +1,9 @@
 package com.openmacro.feature.macros
 
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.animateColorAsState
@@ -143,6 +146,20 @@ fun MacrosScreen(
                         onClick = { onEditMacro(macro.macro.id) },
                         onToggle = { enabled ->
                             if (enabled) {
+                                // Check overlay permission for actions that launch activities
+                                val needsOverlay = macro.actions.any {
+                                    it.typeId in listOf("launch_application", "open_website", "make_call")
+                                }
+                                if (needsOverlay && !Settings.canDrawOverlays(context)) {
+                                    // Prompt user to grant "Display over other apps"
+                                    val intent = Intent(
+                                        Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                                        Uri.parse("package:${context.packageName}"),
+                                    )
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                    context.startActivity(intent)
+                                }
+
                                 val needed = collectRequiredPermissions(macro)
                                 val missing = needed.filter {
                                     ContextCompat.checkSelfPermission(context, it) !=

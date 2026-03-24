@@ -43,6 +43,9 @@
     <!-- Internet (HTTP Request action) -->
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- Display over other apps (required to launch activities from background on Android 10+) -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
     <application>
         <service
             android:name="com.openmacro.core.engine.service.MacroService"
