@@ -46,3 +46,64 @@ data class SetVariableConfig(
 data class DeleteVariableConfig(
     val variableName: String = "",
 )
+
+// Milestone 5
+
+@Serializable
+data class WifiConfigureConfig(
+    val enable: Boolean = true,
+)
+
+@Serializable
+data class BluetoothConfigureConfig(
+    val enable: Boolean = true,
+)
+
+@Serializable
+data class AirplaneModeConfig(
+    val enable: Boolean = true,
+)
+
+@Serializable
+data class SendSmsConfig(
+    val phoneNumber: String = "",
+    val message: String = "",
+)
+
+@Serializable
+data class MakeCallConfig(
+    val phoneNumber: String = "",
+)
+
+@Serializable
+data class LaunchHomeScreenConfig(
+    val placeholder: Boolean = true,
+)
+
+@Serializable
+data class OpenWebsiteConfig(
+    val url: String = "",
+    val useBrowser: Boolean = true,
+)
+
+@Serializable
+data class HttpRequestConfig(
+    val url: String = "",
+    val method: String = "GET",
+    val headers: String = "",
+    val body: String = "",
+    val saveResponseTo: String = "",
+)
+
+@Serializable
+data class SpeakTextConfig(
+    val text: String = "",
+    val language: String = "",
+    val pitch: Float = 1.0f,
+    val speed: Float = 1.0f,
+)
+
+@Serializable
+data class FillClipboardConfig(
+    val text: String = "",
+)

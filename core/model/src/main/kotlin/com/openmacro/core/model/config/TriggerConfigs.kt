@@ -43,3 +43,59 @@ data class AppLaunchConfig(
 data class RegularIntervalConfig(
     val intervalMs: Long = 60_000,
 )
+
+// Milestone 5
+
+@Serializable
+data class WifiStateChangeConfig(
+    val onEnabled: Boolean = true,
+    val onDisabled: Boolean = false,
+)
+
+@Serializable
+data class WifiSsidTransitionConfig(
+    val ssid: String = "",
+    val onConnect: Boolean = true,
+    val onDisconnect: Boolean = false,
+)
+
+@Serializable
+data class BluetoothEventConfig(
+    val onEnabled: Boolean = true,
+    val onDisabled: Boolean = false,
+    val onDeviceConnected: Boolean = false,
+    val onDeviceDisconnected: Boolean = false,
+    val deviceAddress: String = "",
+)
+
+@Serializable
+data class DataConnectivityChangeConfig(
+    val onConnected: Boolean = true,
+    val onDisconnected: Boolean = false,
+)
+
+@Serializable
+data class AirplaneModeChangedConfig(
+    val onEnabled: Boolean = true,
+    val onDisabled: Boolean = false,
+)
+
+@Serializable
+data class SmsReceivedConfig(
+    val senderFilter: String = "",
+)
+
+@Serializable
+data class CallIncomingConfig(
+    val numberFilter: String = "",
+)
+
+@Serializable
+data class CallEndedConfig(
+    val numberFilter: String = "",
+)
+
+@Serializable
+data class CallMissedConfig(
+    val numberFilter: String = "",
+)

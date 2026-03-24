@@ -90,3 +90,22 @@ JAVA_HOME="/c/Program Files/Android/Android Studio/jbr" ./gradlew assembleDebug
 - **3 new action handlers:** `SetVariableHandler`, `DeleteVariableHandler`, `ClearVariablesHandler`. Set/Delete use `lv_` prefix convention to distinguish local vs global.
 - **Constraint editor UI** replaces the M3 stub. Each constraint card shows a logic operator dropdown (AND/OR/XOR/NOT) between constraints. All 8 M4 constraint types have config editors.
 - **WiFi constraint uses deprecated APIs** (`WifiManager.connectionInfo`) for SSID matching. Android 10+ restricts SSID access — will need ACCESS_FINE_LOCATION + location enabled for reliable SSID matching. Good enough for now.
+
+## Milestone 5 Notes
+*Notes taken after finishing Milestone 5 (Connectivity & Communication Expansion).*
+
+- **10 new triggers:** WifiStateChange, WifiSsidTransition, BluetoothEvent, DataConnectivityChange, AirplaneModeChanged, SmsReceived, CallIncoming, CallEnded, CallMissed, RegularInterval. All follow the established BroadcastReceiver or NetworkCallback patterns.
+- **10 new actions:** WifiConfigure, BluetoothConfigure, AirplaneMode, SendSms, MakeCall, LaunchHomeScreen, OpenWebsite, HttpRequest, SpeakText, FillClipboard.
+- **4 new constraints:** BluetoothConnected, WifiEnabled, AirplaneMode, CallState.
+- **CallStateTracker** is a shared singleton that manages the telephony listener. The three call monitors (Incoming, Ended, Missed) register callbacks on it to avoid duplicate `PhoneStateListener`/`TelephonyCallback` registrations. Uses API 31+ `TelephonyCallback` with fallback to deprecated `PhoneStateListener`.
+- **WiFi/Bluetooth toggle actions are restricted on modern Android.** `WifiConfigureHandler` opens a settings panel on Android 10+. `BluetoothConfigureHandler` falls back to Bluetooth settings on newer versions. `AirplaneModeHandler` requires `WRITE_SECURE_SETTINGS` (ADB-grantable) or opens settings.
+- **HttpRequestHandler** uses `java.net.HttpURLConnection` (no OkHttp dependency). Runs on `Dispatchers.IO`. Stores response in `localVariables["http_response_body"]` and optionally in a named variable.
+- **SpeakTextHandler** creates a `TextToSpeech` instance per invocation, waits for `onInit`, speaks, then shuts down. Uses `suspendCancellableCoroutine` to bridge the async TTS callback.
+- **FillClipboardHandler** posts to main thread via `Handler(Looper.getMainLooper())` since `ClipboardManager` requires main thread access.
+- **New magic text tokens:** `{ssid}`, `{call_number}`, `{sms_message}`, `{sms_sender}`, `{http_response_body}`, `{http_response_code}`. The first reads current WiFi SSID directly; the others resolve from trigger data or local variables.
+- **RegularIntervalMonitor** uses coroutine-based `delay` loop rather than `AlarmManager`, which is simpler but means intervals may drift slightly under Doze.
+- **WifiSsidTransitionMonitor** uses `ConnectivityManager.NetworkCallback` rather than polling. SSID access on Android 10+ requires `ACCESS_FINE_LOCATION` permission + location services enabled.
+- **New permissions added:** ACCESS_WIFI_STATE, CHANGE_WIFI_STATE, ACCESS_NETWORK_STATE, ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION, BLUETOOTH (pre-31), BLUETOOTH_ADMIN (pre-31), BLUETOOTH_CONNECT, BLUETOOTH_SCAN, RECEIVE_SMS, SEND_SMS, READ_PHONE_STATE, CALL_PHONE, INTERNET.
+- **No database migration needed** — all new types use the existing `configJson` pattern.
+- **Regex fix in MagicTextResolver:** The token pattern `\{([^}]+)}` crashed on Android's ICU regex engine due to an unescaped closing `}`. Fixed to `\{([^}]+)\}`. This was a pre-existing M4 bug surfaced when the service tried to create the singleton.
+- **BroadcastReceiver/NetworkCallback monitors don't unregister in `stop()`** — this is a known leak shared by both M2 and M5 monitors. `stop()` nulls the reference but doesn't call `unregisterReceiver()`/`unregisterNetworkCallback()`. Works for now because the service context destruction handles cleanup, but will need fixing if we ever need clean stop/restart cycles without service restart.

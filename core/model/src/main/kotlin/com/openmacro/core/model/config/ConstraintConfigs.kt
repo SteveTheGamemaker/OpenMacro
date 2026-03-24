@@ -52,3 +52,25 @@ data class VariableValueConfig(
     val operator: String = "==",
     val value: String = "",
 )
+
+// Milestone 5
+
+@Serializable
+data class BluetoothConnectedConfig(
+    val deviceAddress: String = "",
+)
+
+@Serializable
+data class WifiEnabledConfig(
+    val enabled: Boolean = true,
+)
+
+@Serializable
+data class AirplaneModeConstraintConfig(
+    val enabled: Boolean = true,
+)
+
+@Serializable
+data class CallStateConstraintConfig(
+    val state: String = "idle",
+)
