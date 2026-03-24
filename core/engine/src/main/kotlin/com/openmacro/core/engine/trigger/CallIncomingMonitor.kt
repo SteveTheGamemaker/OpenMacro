@@ -60,7 +60,7 @@ class CallIncomingMonitor @Inject constructor(
             }
 
             val numberMatch = parsed.numberFilter.isBlank() ||
-                number.contains(parsed.numberFilter)
+                number.filter { it.isDigit() }.contains(parsed.numberFilter.filter { it.isDigit() })
 
             if (numberMatch) {
                 callback?.invoke(

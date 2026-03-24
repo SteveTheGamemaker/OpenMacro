@@ -16,6 +16,7 @@ class WifiStateChangeMonitor @Inject constructor() : TriggerMonitor {
     override val triggerTypeId = "wifi_state_change"
 
     private var receiver: BroadcastReceiver? = null
+    private var appContext: Context? = null
     private var configs: List<TriggerConfig> = emptyList()
     private var callback: ((TriggerEvent) -> Unit)? = null
 
@@ -28,6 +29,7 @@ class WifiStateChangeMonitor @Inject constructor() : TriggerMonitor {
             updateConfigs(configs)
             return
         }
+        this.appContext = context.applicationContext
         this.configs = configs
         this.callback = onTrigger
 
@@ -41,12 +43,16 @@ class WifiStateChangeMonitor @Inject constructor() : TriggerMonitor {
             }
         }
 
-        context.registerReceiver(receiver, IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION))
+        context.applicationContext.registerReceiver(receiver, IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION))
         Log.d(TAG, "Started monitoring WiFi state changes")
     }
 
     override fun stop() {
+        receiver?.let { r ->
+            try { appContext?.unregisterReceiver(r) } catch (_: Exception) {}
+        }
         receiver = null
+        appContext = null
         callback = null
         configs = emptyList()
         Log.d(TAG, "Stopped monitoring WiFi state changes")

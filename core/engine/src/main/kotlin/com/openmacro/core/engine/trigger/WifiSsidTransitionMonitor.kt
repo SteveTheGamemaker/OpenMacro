@@ -17,6 +17,7 @@ class WifiSsidTransitionMonitor @Inject constructor() : TriggerMonitor {
     override val triggerTypeId = "wifi_ssid_transition"
 
     private var networkCallback: ConnectivityManager.NetworkCallback? = null
+    private var appContext: Context? = null
     private var configs: List<TriggerConfig> = emptyList()
     private var callback: ((TriggerEvent) -> Unit)? = null
     private var lastSsid: String? = null
@@ -30,10 +31,11 @@ class WifiSsidTransitionMonitor @Inject constructor() : TriggerMonitor {
             updateConfigs(configs)
             return
         }
+        this.appContext = context.applicationContext
         this.configs = configs
         this.callback = onTrigger
 
-        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val cm = context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         @Suppress("DEPRECATION")
         val wm = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
 
@@ -67,7 +69,14 @@ class WifiSsidTransitionMonitor @Inject constructor() : TriggerMonitor {
     }
 
     override fun stop() {
+        networkCallback?.let { cb ->
+            try {
+                val cm = appContext?.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
+                cm?.unregisterNetworkCallback(cb)
+            } catch (_: Exception) {}
+        }
         networkCallback = null
+        appContext = null
         callback = null
         configs = emptyList()
         lastSsid = null

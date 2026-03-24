@@ -29,7 +29,7 @@ data class PowerConnectedConfig(
 data class DayTimeConfig(
     val hour: Int = 8,
     val minute: Int = 0,
-    val daysOfWeek: List<Int> = listOf(1, 2, 3, 4, 5), // Mon-Fri (Calendar constants)
+    val daysOfWeek: List<Int> = listOf(2, 3, 4, 5, 6), // Mon-Fri (Calendar.MONDAY=2 through FRIDAY=6)
 )
 
 @Serializable

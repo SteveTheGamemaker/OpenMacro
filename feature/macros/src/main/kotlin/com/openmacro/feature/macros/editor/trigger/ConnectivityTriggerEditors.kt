@@ -25,6 +25,7 @@ import com.openmacro.core.model.config.RegularIntervalConfig
 import com.openmacro.core.model.config.SmsReceivedConfig
 import com.openmacro.core.model.config.WifiSsidTransitionConfig
 import com.openmacro.core.model.config.WifiStateChangeConfig
+import com.openmacro.core.ui.components.ContactPickerField
 import com.openmacro.core.ui.components.SliderWithLabel
 import kotlinx.serialization.json.Json
 
@@ -167,14 +168,12 @@ fun SmsReceivedConfigEditor(
     }
 
     Column {
-        OutlinedTextField(
+        ContactPickerField(
             value = config.senderFilter,
             onValueChange = {
                 onConfigChanged(json.encodeToString(SmsReceivedConfig.serializer(), config.copy(senderFilter = it)))
             },
-            label = { Text("Sender filter (blank = any)") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
+            label = "Sender filter (blank = any)",
         )
     }
 }
@@ -190,14 +189,12 @@ fun CallIncomingConfigEditor(
     }
 
     Column {
-        OutlinedTextField(
+        ContactPickerField(
             value = config.numberFilter,
             onValueChange = {
                 onConfigChanged(json.encodeToString(CallIncomingConfig.serializer(), config.copy(numberFilter = it)))
             },
-            label = { Text("Number filter (blank = any)") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
+            label = "Number filter (blank = any)",
         )
     }
 }
@@ -213,14 +210,12 @@ fun CallEndedConfigEditor(
     }
 
     Column {
-        OutlinedTextField(
+        ContactPickerField(
             value = config.numberFilter,
             onValueChange = {
                 onConfigChanged(json.encodeToString(CallEndedConfig.serializer(), config.copy(numberFilter = it)))
             },
-            label = { Text("Number filter (blank = any)") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
+            label = "Number filter (blank = any)",
         )
     }
 }
@@ -236,14 +231,12 @@ fun CallMissedConfigEditor(
     }
 
     Column {
-        OutlinedTextField(
+        ContactPickerField(
             value = config.numberFilter,
             onValueChange = {
                 onConfigChanged(json.encodeToString(CallMissedConfig.serializer(), config.copy(numberFilter = it)))
             },
-            label = { Text("Number filter (blank = any)") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
+            label = "Number filter (blank = any)",
         )
     }
 }

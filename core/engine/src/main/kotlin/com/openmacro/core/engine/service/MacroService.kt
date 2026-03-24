@@ -91,7 +91,7 @@ class MacroService : Service() {
         else "$enabledCount macro${if (enabledCount != 1) "s" else ""} active"
 
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(android.R.drawable.ic_media_play)
+            .setSmallIcon(com.openmacro.core.engine.R.drawable.ic_notification)
             .setContentTitle("OpenMacro")
             .setContentText(text)
             .setContentIntent(pendingIntent)

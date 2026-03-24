@@ -114,7 +114,8 @@ Each trigger/action/constraint type is registered via a **registry** (`TypeId �
 - **Advanced variable types:** Dictionary, Array + manipulation actions + JsonParse + TextManipulation
 - **Action Blocks:** reusable function-like groups with input/output params, local scoping
 - Action executor refactor: flat list → action tree with execution stack
-- Editor UI: nested action indentation, expression editor, variable autocomplete
+- Editor UI: nested action indentation, expression editor
+- **Magic Text picker UI:** Insert button on all action text fields that opens a categorized token browser. Sections: (1) trigger-specific tokens from the macro's trigger shown first (e.g. SMS trigger → `{sms_sender}`, `{sms_message}`; Call trigger → `{call_number}`), (2) user-defined variables (`{v_name}`, `{lv_name}`), (3) always-available built-in tokens (time/date, battery, device info, network, etc.). Tapping a token inserts it at cursor position. This is critical for discoverability — users shouldn't need to memorize token names
 
 ### Milestone 7 — Sensors, Location, Device State
 **Goal:** Hardware integration.

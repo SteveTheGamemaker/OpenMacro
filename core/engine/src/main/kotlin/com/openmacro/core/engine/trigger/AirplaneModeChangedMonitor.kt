@@ -16,6 +16,7 @@ class AirplaneModeChangedMonitor @Inject constructor() : TriggerMonitor {
     override val triggerTypeId = "airplane_mode_changed"
 
     private var receiver: BroadcastReceiver? = null
+    private var appContext: Context? = null
     private var configs: List<TriggerConfig> = emptyList()
     private var callback: ((TriggerEvent) -> Unit)? = null
 
@@ -28,6 +29,7 @@ class AirplaneModeChangedMonitor @Inject constructor() : TriggerMonitor {
             updateConfigs(configs)
             return
         }
+        this.appContext = context.applicationContext
         this.configs = configs
         this.callback = onTrigger
 
@@ -42,12 +44,16 @@ class AirplaneModeChangedMonitor @Inject constructor() : TriggerMonitor {
             }
         }
 
-        context.registerReceiver(receiver, IntentFilter(Intent.ACTION_AIRPLANE_MODE_CHANGED))
+        context.applicationContext.registerReceiver(receiver, IntentFilter(Intent.ACTION_AIRPLANE_MODE_CHANGED))
         Log.d(TAG, "Started monitoring airplane mode changes")
     }
 
     override fun stop() {
+        receiver?.let { r ->
+            try { appContext?.unregisterReceiver(r) } catch (_: Exception) {}
+        }
         receiver = null
+        appContext = null
         callback = null
         configs = emptyList()
         Log.d(TAG, "Stopped monitoring airplane mode changes")

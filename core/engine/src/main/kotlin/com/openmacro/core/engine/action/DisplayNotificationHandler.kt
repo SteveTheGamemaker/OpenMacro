@@ -39,7 +39,7 @@ class DisplayNotificationHandler @Inject constructor() : ActionHandler {
         }
 
         val notification = NotificationCompat.Builder(ctx, CHANNEL_ID)
-            .setSmallIcon(android.R.drawable.ic_dialog_info)
+            .setSmallIcon(com.openmacro.core.engine.R.drawable.ic_notification)
             .setContentTitle(parsed.title.ifEmpty { context.macroName })
             .setContentText(parsed.body)
             .setAutoCancel(true)

@@ -32,6 +32,7 @@ import com.openmacro.core.model.config.OpenWebsiteConfig
 import com.openmacro.core.model.config.SendSmsConfig
 import com.openmacro.core.model.config.SpeakTextConfig
 import com.openmacro.core.model.config.WifiConfigureConfig
+import com.openmacro.core.ui.components.ContactPickerField
 import com.openmacro.core.ui.components.SliderWithLabel
 import kotlinx.serialization.json.Json
 
@@ -109,14 +110,12 @@ fun SendSmsConfigEditor(
     }
 
     Column {
-        OutlinedTextField(
+        ContactPickerField(
             value = config.phoneNumber,
             onValueChange = {
                 onConfigChanged(json.encodeToString(SendSmsConfig.serializer(), config.copy(phoneNumber = it)))
             },
-            label = { Text("Phone number") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
+            label = "Phone number",
         )
         Spacer(modifier = Modifier.height(8.dp))
         OutlinedTextField(
@@ -142,14 +141,12 @@ fun MakeCallConfigEditor(
     }
 
     Column {
-        OutlinedTextField(
+        ContactPickerField(
             value = config.phoneNumber,
             onValueChange = {
                 onConfigChanged(json.encodeToString(MakeCallConfig.serializer(), config.copy(phoneNumber = it)))
             },
-            label = { Text("Phone number") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
+            label = "Phone number",
         )
     }
 }

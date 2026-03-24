@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!--
+      Lightning-M silhouette from the OpenMacro logo, for notification small icon.
+      Original SVG path bounding box: ~53x54 units centered at (105, 149).
+      Scaled to fit 20x20 within 24x24 viewport (2dp padding).
+    -->
+    <group
+        android:scaleX="0.368"
+        android:scaleY="0.368"
+        android:translateX="-26.64"
+        android:translateY="-42.88">
+
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="m 78.435676,121.97552 v 43.99629 l 10.302213,10.30221 v -28.86594 l 16.222261,16.22227 v 0.0786 l 0.0393,-0.0393 0.0393,0.0393 v -0.0786 l 16.22227,-16.22227 v 28.86594 l 10.30221,-10.30221 V 121.97552 L 105,148.5 Z" />
+    </group>
+</vector>

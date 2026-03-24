@@ -16,6 +16,7 @@ class SmsReceivedMonitor @Inject constructor() : TriggerMonitor {
     override val triggerTypeId = "sms_received"
 
     private var receiver: BroadcastReceiver? = null
+    private var appContext: Context? = null
     private var configs: List<TriggerConfig> = emptyList()
     private var callback: ((TriggerEvent) -> Unit)? = null
 
@@ -28,6 +29,7 @@ class SmsReceivedMonitor @Inject constructor() : TriggerMonitor {
             updateConfigs(configs)
             return
         }
+        this.appContext = context.applicationContext
         this.configs = configs
         this.callback = onTrigger
 
@@ -42,7 +44,7 @@ class SmsReceivedMonitor @Inject constructor() : TriggerMonitor {
             }
         }
 
-        context.registerReceiver(
+        context.applicationContext.registerReceiver(
             receiver,
             IntentFilter(Telephony.Sms.Intents.SMS_RECEIVED_ACTION),
         )
@@ -50,7 +52,11 @@ class SmsReceivedMonitor @Inject constructor() : TriggerMonitor {
     }
 
     override fun stop() {
+        receiver?.let { r ->
+            try { appContext?.unregisterReceiver(r) } catch (_: Exception) {}
+        }
         receiver = null
+        appContext = null
         callback = null
         configs = emptyList()
         Log.d(TAG, "Stopped monitoring SMS received")
@@ -69,7 +75,7 @@ class SmsReceivedMonitor @Inject constructor() : TriggerMonitor {
             }
 
             val senderMatch = parsed.senderFilter.isBlank() ||
-                sender.contains(parsed.senderFilter, ignoreCase = true)
+                sender.filter { it.isDigit() }.contains(parsed.senderFilter.filter { it.isDigit() })
 
             if (senderMatch) {
                 callback?.invoke(

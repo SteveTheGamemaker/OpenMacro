@@ -15,6 +15,7 @@ class PowerConnectedMonitor @Inject constructor() : TriggerMonitor {
     override val triggerTypeId = "power_connected"
 
     private var receiver: BroadcastReceiver? = null
+    private var appContext: Context? = null
     private var configs: List<TriggerConfig> = emptyList()
     private var callback: ((TriggerEvent) -> Unit)? = null
 
@@ -27,6 +28,7 @@ class PowerConnectedMonitor @Inject constructor() : TriggerMonitor {
             updateConfigs(configs)
             return
         }
+        this.appContext = context.applicationContext
         this.configs = configs
         this.callback = onTrigger
 
@@ -41,12 +43,16 @@ class PowerConnectedMonitor @Inject constructor() : TriggerMonitor {
             addAction(Intent.ACTION_POWER_CONNECTED)
             addAction(Intent.ACTION_POWER_DISCONNECTED)
         }
-        context.registerReceiver(receiver, filter)
+        context.applicationContext.registerReceiver(receiver, filter)
         Log.d(TAG, "Started monitoring power connected")
     }
 
     override fun stop() {
+        receiver?.let { r ->
+            try { appContext?.unregisterReceiver(r) } catch (_: Exception) {}
+        }
         receiver = null
+        appContext = null
         callback = null
         configs = emptyList()
     }

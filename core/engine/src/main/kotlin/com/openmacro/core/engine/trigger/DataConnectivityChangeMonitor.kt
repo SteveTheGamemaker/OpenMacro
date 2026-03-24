@@ -16,6 +16,7 @@ class DataConnectivityChangeMonitor @Inject constructor() : TriggerMonitor {
     override val triggerTypeId = "data_connectivity_change"
 
     private var networkCallback: ConnectivityManager.NetworkCallback? = null
+    private var appContext: Context? = null
     private var configs: List<TriggerConfig> = emptyList()
     private var callback: ((TriggerEvent) -> Unit)? = null
 
@@ -28,10 +29,11 @@ class DataConnectivityChangeMonitor @Inject constructor() : TriggerMonitor {
             updateConfigs(configs)
             return
         }
+        this.appContext = context.applicationContext
         this.configs = configs
         this.callback = onTrigger
 
-        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val cm = context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
         val request = NetworkRequest.Builder()
             .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
@@ -52,7 +54,14 @@ class DataConnectivityChangeMonitor @Inject constructor() : TriggerMonitor {
     }
 
     override fun stop() {
+        networkCallback?.let { cb ->
+            try {
+                val cm = appContext?.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
+                cm?.unregisterNetworkCallback(cb)
+            } catch (_: Exception) {}
+        }
         networkCallback = null
+        appContext = null
         callback = null
         configs = emptyList()
         Log.d(TAG, "Stopped monitoring data connectivity changes")
