@@ -18,11 +18,14 @@ interface ActionConfigDao {
     @Query("SELECT * FROM action_configs WHERE id = :id")
     suspend fun getById(id: Long): ActionConfigEntity?
 
+    @Query("SELECT * FROM action_configs WHERE action_block_id = :blockId ORDER BY sort_order ASC")
+    fun observeByActionBlock(blockId: Long): Flow<List<ActionConfigEntity>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(action: ActionConfigEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(actions: List<ActionConfigEntity>)
+    suspend fun insertAll(actions: List<ActionConfigEntity>): List<Long>
 
     @Update
     suspend fun update(action: ActionConfigEntity)
@@ -32,4 +35,7 @@ interface ActionConfigDao {
 
     @Query("DELETE FROM action_configs WHERE macro_id = :macroId")
     suspend fun deleteByMacro(macroId: Long)
+
+    @Query("DELETE FROM action_configs WHERE action_block_id = :blockId")
+    suspend fun deleteByActionBlock(blockId: Long)
 }

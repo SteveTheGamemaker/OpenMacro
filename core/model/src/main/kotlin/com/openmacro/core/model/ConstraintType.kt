@@ -20,6 +20,12 @@ enum class ConstraintType(val typeId: String, val displayName: String) {
     WIFI_ENABLED("wifi_enabled", "WiFi Enabled"),
     AIRPLANE_MODE("airplane_mode", "Airplane Mode"),
     CALL_STATE("call_state", "Call State"),
+
+    // Milestone 7
+    LOCATION("location", "Location"),
+    HEADPHONES("headphones", "Headphones"),
+    DO_NOT_DISTURB("do_not_disturb", "Do Not Disturb"),
+    SILENT_MODE("silent_mode", "Silent Mode"),
     ;
 
     companion object {

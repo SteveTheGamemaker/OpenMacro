@@ -15,9 +15,11 @@ object PermissionHelper {
      */
     fun triggerPermissions(typeId: String): List<String> = when (typeId) {
         "sms_received" -> listOf(Manifest.permission.RECEIVE_SMS)
+        "sms_sent" -> listOf(Manifest.permission.READ_SMS)
         "call_incoming", "call_ended", "call_missed" -> listOf(Manifest.permission.READ_PHONE_STATE)
         "bluetooth_event" -> bluetoothPermissions()
         "wifi_ssid_transition" -> locationPermissions()
+        "geofence", "location" -> locationPermissions()
         else -> emptyList()
     }
 

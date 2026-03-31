@@ -1,5 +1,6 @@
 package com.openmacro.core.database.entity
 
+import com.openmacro.core.model.ActionBlock
 import com.openmacro.core.model.ActionConfig
 import com.openmacro.core.model.ConstraintConfig
 import com.openmacro.core.model.LogicOperator
@@ -10,6 +11,9 @@ import com.openmacro.core.model.MacroLogStatus
 import com.openmacro.core.model.TriggerConfig
 import com.openmacro.core.model.Variable
 import com.openmacro.core.model.VariableType
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.json.Json
 
 // ── Macro ──
 
@@ -157,4 +161,34 @@ fun Variable.toEntity() = VariableEntity(
     type = type.name,
     valueJson = valueJson,
     isGlobal = isGlobal,
+)
+
+// ── ActionBlock ──
+
+private val json = Json { ignoreUnknownKeys = true }
+
+fun ActionBlockEntity.toDomain() = ActionBlock(
+    id = id,
+    name = name,
+    description = description,
+    inputParams = try {
+        json.decodeFromString<List<String>>(inputParamsJson)
+    } catch (_: Exception) { emptyList() },
+    outputParams = try {
+        json.decodeFromString<List<String>>(outputParamsJson)
+    } catch (_: Exception) { emptyList() },
+    createdAt = createdAt,
+    updatedAt = updatedAt,
+)
+
+private val stringListSerializer = ListSerializer(String.serializer())
+
+fun ActionBlock.toEntity() = ActionBlockEntity(
+    id = id,
+    name = name,
+    description = description,
+    inputParamsJson = json.encodeToString(stringListSerializer, inputParams),
+    outputParamsJson = json.encodeToString(stringListSerializer, outputParams),
+    createdAt = createdAt,
+    updatedAt = updatedAt,
 )

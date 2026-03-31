@@ -55,6 +55,7 @@ dependencies {
     implementation(project(":feature:logs"))
     implementation(project(":feature:settings"))
     implementation(project(":feature:variables"))
+    implementation(project(":feature:actionblocks"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)

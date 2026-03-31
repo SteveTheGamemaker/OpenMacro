@@ -25,7 +25,7 @@ import javax.inject.Singleton
 @Singleton
 class MagicTextResolver @Inject constructor() {
 
-    private val tokenPattern = Regex("\\{([^}]+)\\}")
+    private val tokenPattern = Regex("\\{(\\w+)\\}")
 
     fun resolve(text: String, context: ExecutionContext): String {
         if (!text.contains('{')) return text
@@ -46,6 +46,8 @@ class MagicTextResolver @Inject constructor() {
             "macro_name" -> return context.macroName
             "trigger_type" -> return context.triggerEvent.triggerTypeId
             "ssid" -> return getCurrentSsid(context.androidContext)
+            "sms_recipient" -> return context.triggerEvent.data["sms_recipient"]
+                ?: context.localVariables["sms_recipient"]
             "call_number" -> return context.triggerEvent.data["call_number"]
                 ?: context.localVariables["call_number"]
             "sms_message" -> return context.triggerEvent.data["sms_message"]

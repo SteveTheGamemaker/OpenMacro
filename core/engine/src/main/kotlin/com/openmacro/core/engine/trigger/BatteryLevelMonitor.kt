@@ -15,6 +15,7 @@ import javax.inject.Inject
 class BatteryLevelMonitor @Inject constructor() : TriggerMonitor {
     override val triggerTypeId = "battery_level"
 
+    private var appContext: Context? = null
     private var receiver: BroadcastReceiver? = null
     private var configs: List<TriggerConfig> = emptyList()
     private var callback: ((TriggerEvent) -> Unit)? = null
@@ -30,6 +31,7 @@ class BatteryLevelMonitor @Inject constructor() : TriggerMonitor {
             updateConfigs(configs)
             return
         }
+        this.appContext = context.applicationContext
         this.configs = configs
         this.callback = onTrigger
 
@@ -47,7 +49,13 @@ class BatteryLevelMonitor @Inject constructor() : TriggerMonitor {
     }
 
     override fun stop() {
+        receiver?.let { r ->
+            try {
+                appContext?.unregisterReceiver(r)
+            } catch (_: Exception) { }
+        }
         receiver = null
+        appContext = null
         callback = null
         configs = emptyList()
         lastLevel = -1

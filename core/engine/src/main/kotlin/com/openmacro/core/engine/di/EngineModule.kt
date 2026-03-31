@@ -2,6 +2,18 @@ package com.openmacro.core.engine.di
 
 import com.openmacro.core.engine.action.ActionHandler
 import com.openmacro.core.engine.action.AirplaneModeHandler
+import com.openmacro.core.engine.action.ArrayManipulationHandler
+import com.openmacro.core.engine.action.BreakHandler
+import com.openmacro.core.engine.action.CancelMacroHandler
+import com.openmacro.core.engine.action.ContinueHandler
+import com.openmacro.core.engine.action.ElseMarkerHandler
+import com.openmacro.core.engine.action.IfClauseHandler
+import com.openmacro.core.engine.action.IterateHandler
+import com.openmacro.core.engine.action.JsonParseHandler
+import com.openmacro.core.engine.action.RepeatHandler
+import com.openmacro.core.engine.action.RunActionBlockHandler
+import com.openmacro.core.engine.action.TextManipulationHandler
+import com.openmacro.core.engine.action.WaitUntilTriggerHandler
 import com.openmacro.core.engine.action.BluetoothConfigureHandler
 import com.openmacro.core.engine.action.ClearVariablesHandler
 import com.openmacro.core.engine.action.DeleteVariableHandler
@@ -45,9 +57,38 @@ import com.openmacro.core.engine.trigger.PowerConnectedMonitor
 import com.openmacro.core.engine.trigger.RegularIntervalMonitor
 import com.openmacro.core.engine.trigger.ScreenOnOffMonitor
 import com.openmacro.core.engine.trigger.SmsReceivedMonitor
+import com.openmacro.core.engine.trigger.SmsSentMonitor
 import com.openmacro.core.engine.trigger.TriggerMonitor
 import com.openmacro.core.engine.trigger.WifiSsidTransitionMonitor
 import com.openmacro.core.engine.trigger.WifiStateChangeMonitor
+import com.openmacro.core.engine.trigger.ShakeDeviceMonitor
+import com.openmacro.core.engine.trigger.FlipDeviceMonitor
+import com.openmacro.core.engine.trigger.ProximitySensorMonitor
+import com.openmacro.core.engine.trigger.LightSensorMonitor
+import com.openmacro.core.engine.trigger.ScreenOrientationMonitor
+import com.openmacro.core.engine.trigger.ActivityRecognitionMonitor
+import com.openmacro.core.engine.trigger.DeviceBootMonitor
+import com.openmacro.core.engine.trigger.BatteryTemperatureMonitor
+import com.openmacro.core.engine.trigger.BatterySaverStateMonitor
+import com.openmacro.core.engine.trigger.DarkThemeChangeMonitor
+import com.openmacro.core.engine.trigger.GpsEnabledDisabledMonitor
+import com.openmacro.core.engine.trigger.DoNotDisturbMonitor
+import com.openmacro.core.engine.trigger.SilentModeMonitor
+import com.openmacro.core.engine.trigger.TorchOnOffMonitor
+import com.openmacro.core.engine.trigger.GeofenceMonitor
+import com.openmacro.core.engine.trigger.LocationTriggerMonitor
+import com.openmacro.core.engine.action.SetBrightnessHandler
+import com.openmacro.core.engine.action.ScreenOnOffActionHandler
+import com.openmacro.core.engine.action.ForceScreenRotationHandler
+import com.openmacro.core.engine.action.AutoRotateHandler
+import com.openmacro.core.engine.action.DarkThemeHandler
+import com.openmacro.core.engine.action.SetWallpaperHandler
+import com.openmacro.core.engine.action.KeepDeviceAwakeHandler
+import com.openmacro.core.engine.action.GpsEnableDisableHandler
+import com.openmacro.core.engine.constraint.LocationChecker
+import com.openmacro.core.engine.constraint.HeadphonesChecker
+import com.openmacro.core.engine.constraint.DoNotDisturbChecker
+import com.openmacro.core.engine.constraint.SilentModeChecker
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -107,6 +148,63 @@ abstract class EngineModule {
     @Binds @IntoSet
     abstract fun bindRegularInterval(impl: RegularIntervalMonitor): TriggerMonitor
 
+    @Binds @IntoSet
+    abstract fun bindSmsSent(impl: SmsSentMonitor): TriggerMonitor
+
+    // Milestone 7 — Sensor Triggers
+
+    @Binds @IntoSet
+    abstract fun bindShakeDevice(impl: ShakeDeviceMonitor): TriggerMonitor
+
+    @Binds @IntoSet
+    abstract fun bindFlipDevice(impl: FlipDeviceMonitor): TriggerMonitor
+
+    @Binds @IntoSet
+    abstract fun bindProximitySensor(impl: ProximitySensorMonitor): TriggerMonitor
+
+    @Binds @IntoSet
+    abstract fun bindLightSensor(impl: LightSensorMonitor): TriggerMonitor
+
+    @Binds @IntoSet
+    abstract fun bindScreenOrientation(impl: ScreenOrientationMonitor): TriggerMonitor
+
+    @Binds @IntoSet
+    abstract fun bindActivityRecognition(impl: ActivityRecognitionMonitor): TriggerMonitor
+
+    // Milestone 7 — Device State Triggers
+
+    @Binds @IntoSet
+    abstract fun bindDeviceBoot(impl: DeviceBootMonitor): TriggerMonitor
+
+    @Binds @IntoSet
+    abstract fun bindBatteryTemperature(impl: BatteryTemperatureMonitor): TriggerMonitor
+
+    @Binds @IntoSet
+    abstract fun bindBatterySaverState(impl: BatterySaverStateMonitor): TriggerMonitor
+
+    @Binds @IntoSet
+    abstract fun bindDarkThemeChange(impl: DarkThemeChangeMonitor): TriggerMonitor
+
+    @Binds @IntoSet
+    abstract fun bindGpsEnabledDisabled(impl: GpsEnabledDisabledMonitor): TriggerMonitor
+
+    @Binds @IntoSet
+    abstract fun bindDoNotDisturb(impl: DoNotDisturbMonitor): TriggerMonitor
+
+    @Binds @IntoSet
+    abstract fun bindSilentMode(impl: SilentModeMonitor): TriggerMonitor
+
+    @Binds @IntoSet
+    abstract fun bindTorchOnOff(impl: TorchOnOffMonitor): TriggerMonitor
+
+    // Milestone 7 — Location Triggers
+
+    @Binds @IntoSet
+    abstract fun bindGeofence(impl: GeofenceMonitor): TriggerMonitor
+
+    @Binds @IntoSet
+    abstract fun bindLocationTrigger(impl: LocationTriggerMonitor): TriggerMonitor
+
     // ── Action Handlers ──
 
     @Binds @IntoSet
@@ -165,6 +263,70 @@ abstract class EngineModule {
     @Binds @IntoSet
     abstract fun bindFillClipboard(impl: FillClipboardHandler): ActionHandler
 
+    // Milestone 6 — Flow Control
+
+    @Binds @IntoSet
+    abstract fun bindIfClause(impl: IfClauseHandler): ActionHandler
+
+    @Binds @IntoSet
+    abstract fun bindElseMarker(impl: ElseMarkerHandler): ActionHandler
+
+    @Binds @IntoSet
+    abstract fun bindRepeat(impl: RepeatHandler): ActionHandler
+
+    @Binds @IntoSet
+    abstract fun bindBreak(impl: BreakHandler): ActionHandler
+
+    @Binds @IntoSet
+    abstract fun bindContinue(impl: ContinueHandler): ActionHandler
+
+    @Binds @IntoSet
+    abstract fun bindCancelMacro(impl: CancelMacroHandler): ActionHandler
+
+    @Binds @IntoSet
+    abstract fun bindIterate(impl: IterateHandler): ActionHandler
+
+    @Binds @IntoSet
+    abstract fun bindArrayManipulation(impl: ArrayManipulationHandler): ActionHandler
+
+    @Binds @IntoSet
+    abstract fun bindJsonParse(impl: JsonParseHandler): ActionHandler
+
+    @Binds @IntoSet
+    abstract fun bindTextManipulation(impl: TextManipulationHandler): ActionHandler
+
+    @Binds @IntoSet
+    abstract fun bindWaitUntilTrigger(impl: WaitUntilTriggerHandler): ActionHandler
+
+    @Binds @IntoSet
+    abstract fun bindRunActionBlock(impl: RunActionBlockHandler): ActionHandler
+
+    // Milestone 7 — Device Actions
+
+    @Binds @IntoSet
+    abstract fun bindSetBrightness(impl: SetBrightnessHandler): ActionHandler
+
+    @Binds @IntoSet
+    abstract fun bindScreenOnOffAction(impl: ScreenOnOffActionHandler): ActionHandler
+
+    @Binds @IntoSet
+    abstract fun bindForceScreenRotation(impl: ForceScreenRotationHandler): ActionHandler
+
+    @Binds @IntoSet
+    abstract fun bindAutoRotate(impl: AutoRotateHandler): ActionHandler
+
+    @Binds @IntoSet
+    abstract fun bindDarkTheme(impl: DarkThemeHandler): ActionHandler
+
+    @Binds @IntoSet
+    abstract fun bindSetWallpaper(impl: SetWallpaperHandler): ActionHandler
+
+    @Binds @IntoSet
+    abstract fun bindKeepDeviceAwake(impl: KeepDeviceAwakeHandler): ActionHandler
+
+    @Binds @IntoSet
+    abstract fun bindGpsEnableDisable(impl: GpsEnableDisableHandler): ActionHandler
+
     // ── Constraint Checkers ──
 
     @Binds @IntoSet
@@ -204,4 +366,18 @@ abstract class EngineModule {
 
     @Binds @IntoSet
     abstract fun bindCallStateChecker(impl: CallStateChecker): ConstraintChecker
+
+    // Milestone 7 Constraints
+
+    @Binds @IntoSet
+    abstract fun bindLocationChecker(impl: LocationChecker): ConstraintChecker
+
+    @Binds @IntoSet
+    abstract fun bindHeadphonesChecker(impl: HeadphonesChecker): ConstraintChecker
+
+    @Binds @IntoSet
+    abstract fun bindDoNotDisturbChecker(impl: DoNotDisturbChecker): ConstraintChecker
+
+    @Binds @IntoSet
+    abstract fun bindSilentModeChecker(impl: SilentModeChecker): ConstraintChecker
 }

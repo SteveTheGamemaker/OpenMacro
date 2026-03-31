@@ -1,0 +1,120 @@
+package com.openmacro.feature.macros.editor.trigger
+
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.openmacro.core.model.config.GeofenceConfig
+import com.openmacro.core.model.config.LocationConfig
+import com.openmacro.core.ui.components.SliderWithLabel
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+
+private val json = Json { ignoreUnknownKeys = true }
+
+@Composable
+fun GeofenceConfigEditor(
+    configJson: String,
+    onConfigChanged: (String) -> Unit,
+) {
+    val config = remember(configJson) {
+        runCatching { json.decodeFromString<GeofenceConfig>(configJson) }
+            .getOrDefault(GeofenceConfig())
+    }
+    Column {
+        OutlinedTextField(
+            value = config.locationName,
+            onValueChange = { onConfigChanged(json.encodeToString(config.copy(locationName = it))) },
+            label = { Text("Location name") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        OutlinedTextField(
+            value = if (config.latitude != 0.0) config.latitude.toString() else "",
+            onValueChange = { v -> v.toDoubleOrNull()?.let { onConfigChanged(json.encodeToString(config.copy(latitude = it))) } },
+            label = { Text("Latitude") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        OutlinedTextField(
+            value = if (config.longitude != 0.0) config.longitude.toString() else "",
+            onValueChange = { v -> v.toDoubleOrNull()?.let { onConfigChanged(json.encodeToString(config.copy(longitude = it))) } },
+            label = { Text("Longitude") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        SliderWithLabel(
+            label = "Radius",
+            value = config.radiusMeters,
+            onValueChange = { onConfigChanged(json.encodeToString(config.copy(radiusMeters = it))) },
+            valueRange = 50f..5000f,
+            valueText = "${config.radiusMeters.toInt()}m",
+        )
+        SwitchRow("Trigger on enter", config.onEnter) {
+            onConfigChanged(json.encodeToString(config.copy(onEnter = it)))
+        }
+        SwitchRow("Trigger on exit", config.onExit) {
+            onConfigChanged(json.encodeToString(config.copy(onExit = it)))
+        }
+    }
+}
+
+@Composable
+fun LocationConfigEditor(
+    configJson: String,
+    onConfigChanged: (String) -> Unit,
+) {
+    val config = remember(configJson) {
+        runCatching { json.decodeFromString<LocationConfig>(configJson) }
+            .getOrDefault(LocationConfig())
+    }
+    Column {
+        OutlinedTextField(
+            value = config.locationName,
+            onValueChange = { onConfigChanged(json.encodeToString(config.copy(locationName = it))) },
+            label = { Text("Location name") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        OutlinedTextField(
+            value = if (config.latitude != 0.0) config.latitude.toString() else "",
+            onValueChange = { v -> v.toDoubleOrNull()?.let { onConfigChanged(json.encodeToString(config.copy(latitude = it))) } },
+            label = { Text("Latitude") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        OutlinedTextField(
+            value = if (config.longitude != 0.0) config.longitude.toString() else "",
+            onValueChange = { v -> v.toDoubleOrNull()?.let { onConfigChanged(json.encodeToString(config.copy(longitude = it))) } },
+            label = { Text("Longitude") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        SliderWithLabel(
+            label = "Radius",
+            value = config.radiusMeters,
+            onValueChange = { onConfigChanged(json.encodeToString(config.copy(radiusMeters = it))) },
+            valueRange = 50f..5000f,
+            valueText = "${config.radiusMeters.toInt()}m",
+        )
+    }
+}
+
+@Composable
+private fun SwitchRow(label: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(label, modifier = Modifier.weight(1f))
+        Switch(checked = checked, onCheckedChange = onCheckedChange)
+    }
+}

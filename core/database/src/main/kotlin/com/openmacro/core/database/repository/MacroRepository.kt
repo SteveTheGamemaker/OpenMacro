@@ -6,6 +6,7 @@ import com.openmacro.core.database.dao.ConstraintConfigDao
 import com.openmacro.core.database.dao.MacroDao
 import com.openmacro.core.database.dao.MacroLogDao
 import com.openmacro.core.database.dao.TriggerConfigDao
+import com.openmacro.core.database.entity.ActionConfigEntity
 import com.openmacro.core.database.entity.toDomain
 import com.openmacro.core.database.entity.toEntity
 import com.openmacro.core.model.ActionConfig
@@ -91,6 +92,10 @@ class MacroRepository @Inject constructor(
     /**
      * Saves a macro with all its triggers, actions, and constraints in one operation.
      * Replaces existing children for the macro.
+     *
+     * For actions with parent-child relationships (flow control nesting), this uses
+     * a two-pass insert: first insert all actions with id=0 to get their real DB IDs,
+     * then update parentActionId references to point to the correct new IDs.
      */
     suspend fun saveMacroWithDetails(
         macro: Macro,
@@ -106,8 +111,49 @@ class MacroRepository @Inject constructor(
         constraintConfigDao.deleteByMacro(macroId)
 
         triggerConfigDao.insertAll(triggers.map { it.copy(macroId = macroId).toEntity() })
-        actionConfigDao.insertAll(actions.map { it.copy(macroId = macroId).toEntity() })
         constraintConfigDao.insertAll(constraints.map { it.copy(macroId = macroId).toEntity() })
+
+        // Two-pass insert for actions to preserve parent-child relationships.
+        // The editor uses temp IDs (negative or in-memory) for unsaved actions,
+        // so we need to map old IDs → new DB IDs then fix parentActionId pointers.
+        val hasNesting = actions.any { it.parentActionId != null }
+        if (!hasNesting) {
+            // Fast path: no nesting, simple bulk insert
+            actionConfigDao.insertAll(
+                actions.map { it.copy(macroId = macroId, id = 0).toEntity() },
+            )
+        } else {
+            // Pass 1: Insert all actions with parentActionId = null to get new DB IDs
+            val actionsForInsert = actions.map {
+                it.copy(macroId = macroId, id = 0, parentActionId = null).toEntity()
+            }
+            val newIds = actionConfigDao.insertAll(actionsForInsert)
+
+            // Build mapping from old (temp) IDs → new DB IDs
+            val oldToNewId = mutableMapOf<Long, Long>()
+            actions.forEachIndexed { index, action ->
+                oldToNewId[action.id] = newIds[index]
+            }
+
+            // Pass 2: Update parentActionId for actions that have a parent
+            for ((index, action) in actions.withIndex()) {
+                val oldParentId = action.parentActionId ?: continue
+                val newParentId = oldToNewId[oldParentId] ?: continue
+                val newId = newIds[index]
+                actionConfigDao.update(
+                    ActionConfigEntity(
+                        id = newId,
+                        macroId = macroId,
+                        actionBlockId = action.actionBlockId,
+                        type = action.typeId,
+                        configJson = action.configJson,
+                        sortOrder = action.sortOrder,
+                        isEnabled = action.isEnabled,
+                        parentActionId = newParentId,
+                    ),
+                )
+            }
+        }
 
         return macroId
     }

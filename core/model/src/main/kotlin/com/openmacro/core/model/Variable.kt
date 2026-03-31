@@ -5,6 +5,8 @@ enum class VariableType {
     INTEGER,
     DECIMAL,
     STRING,
+    ARRAY,
+    DICTIONARY,
 }
 
 data class Variable(

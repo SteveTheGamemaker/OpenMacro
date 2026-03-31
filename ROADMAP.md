@@ -40,8 +40,8 @@ Each trigger/action/constraint type is registered via a **registry** (`TypeId �
 - [x] **Milestone 3 — Macro Editor UI**
 - [x] **Milestone 4 — Constraints + Variables + Magic Text**
 - [x] **Milestone 5 — Connectivity & Communication Expansion**
-- [ ] **Milestone 6 — Flow Control, Expressions, Action Blocks**
-- [ ] **Milestone 7 — Sensors, Location, Device State**
+- [x] **Milestone 6 — Flow Control, Expressions, Action Blocks**
+- [x] **Milestone 7 — Sensors, Location, Device State**
 - [ ] **Milestone 8 — Notifications & App Events**
 - [ ] **Milestone 9 — Accessibility & UI Interaction**
 - [ ] **Milestone 10 — Advanced System Features**
@@ -164,6 +164,7 @@ Each trigger/action/constraint type is registered via a **registry** (`TypeId �
 - Comprehensive settings screen (service, permissions dashboard, advanced)
 - Onboarding flow + first-macro wizard
 - UX polish: animations, empty states, error handling, tablet layouts
+- Categorized trigger/action/constraint picker (group TypePickerSheet items by category with collapsible headers)
 - Remaining triggers: CalendarEvent, SunriseSunset, Stopwatch system, SIMCardChange, FoldState
 - Remaining actions: PlaySound, TakePicture, TakeScreenshot, OCR (ML Kit), Translate, BiometricAuth, CalendarAddEvent
 

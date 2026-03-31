@@ -5,6 +5,7 @@ import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.openmacro.core.database.OpenMacroDatabase
+import com.openmacro.core.database.dao.ActionBlockDao
 import com.openmacro.core.database.dao.ActionConfigDao
 import com.openmacro.core.database.dao.CategoryDao
 import com.openmacro.core.database.dao.ConstraintConfigDao
@@ -18,6 +19,24 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
+
+val MIGRATION_2_3 = object : Migration(2, 3) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            """
+            CREATE TABLE IF NOT EXISTS `action_blocks` (
+                `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                `name` TEXT NOT NULL,
+                `description` TEXT NOT NULL DEFAULT '',
+                `input_params_json` TEXT NOT NULL DEFAULT '[]',
+                `output_params_json` TEXT NOT NULL DEFAULT '[]',
+                `created_at` INTEGER NOT NULL,
+                `updated_at` INTEGER NOT NULL
+            )
+            """.trimIndent()
+        )
+    }
+}
 
 val MIGRATION_1_2 = object : Migration(1, 2) {
     override fun migrate(db: SupportSQLiteDatabase) {
@@ -48,7 +67,7 @@ object DatabaseModule {
             OpenMacroDatabase::class.java,
             "openmacro.db",
         )
-            .addMigrations(MIGRATION_1_2)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
             .build()
 
     @Provides
@@ -71,4 +90,7 @@ object DatabaseModule {
 
     @Provides
     fun provideVariableDao(db: OpenMacroDatabase): VariableDao = db.variableDao()
+
+    @Provides
+    fun provideActionBlockDao(db: OpenMacroDatabase): ActionBlockDao = db.actionBlockDao()
 }

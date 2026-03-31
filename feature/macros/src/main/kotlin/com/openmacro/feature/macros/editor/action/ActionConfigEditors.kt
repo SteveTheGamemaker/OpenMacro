@@ -28,6 +28,7 @@ import com.openmacro.core.model.config.SetVolumeConfig
 import com.openmacro.core.model.config.VibrateConfig
 import com.openmacro.core.model.config.WaitConfig
 import com.openmacro.core.ui.components.AppPickerSheet
+import com.openmacro.core.ui.components.MagicTextField
 import com.openmacro.core.ui.components.SliderWithLabel
 import kotlinx.serialization.json.Json
 
@@ -44,24 +45,22 @@ fun DisplayNotificationConfigEditor(
     }
 
     Column {
-        OutlinedTextField(
+        MagicTextField(
             value = config.title,
             onValueChange = {
                 onConfigChanged(json.encodeToString(DisplayNotificationConfig.serializer(), config.copy(title = it)))
             },
-            label = { Text("Title") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
+            label = "Title",
         )
         Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
+        MagicTextField(
             value = config.body,
             onValueChange = {
                 onConfigChanged(json.encodeToString(DisplayNotificationConfig.serializer(), config.copy(body = it)))
             },
-            label = { Text("Body") },
-            minLines = 2,
-            modifier = Modifier.fillMaxWidth(),
+            label = "Body",
+            singleLine = false,
+            maxLines = 4,
         )
     }
 }
@@ -237,14 +236,12 @@ fun SetVariableConfigEditor(
             modifier = Modifier.fillMaxWidth(),
         )
         Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
+        MagicTextField(
             value = config.value,
             onValueChange = {
                 onConfigChanged(json.encodeToString(SetVariableConfig.serializer(), config.copy(value = it)))
             },
-            label = { Text("Value") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
+            label = "Value",
         )
     }
 }

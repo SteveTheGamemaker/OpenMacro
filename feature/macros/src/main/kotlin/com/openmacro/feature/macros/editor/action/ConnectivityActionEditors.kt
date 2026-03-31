@@ -33,6 +33,7 @@ import com.openmacro.core.model.config.SendSmsConfig
 import com.openmacro.core.model.config.SpeakTextConfig
 import com.openmacro.core.model.config.WifiConfigureConfig
 import com.openmacro.core.ui.components.ContactPickerField
+import com.openmacro.core.ui.components.MagicTextField
 import com.openmacro.core.ui.components.SliderWithLabel
 import kotlinx.serialization.json.Json
 
@@ -118,14 +119,14 @@ fun SendSmsConfigEditor(
             label = "Phone number",
         )
         Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
+        MagicTextField(
             value = config.message,
             onValueChange = {
                 onConfigChanged(json.encodeToString(SendSmsConfig.serializer(), config.copy(message = it)))
             },
-            label = { Text("Message") },
-            minLines = 2,
-            modifier = Modifier.fillMaxWidth(),
+            label = "Message",
+            singleLine = false,
+            maxLines = 4,
         )
     }
 }
@@ -162,14 +163,12 @@ fun OpenWebsiteConfigEditor(
     }
 
     Column {
-        OutlinedTextField(
+        MagicTextField(
             value = config.url,
             onValueChange = {
                 onConfigChanged(json.encodeToString(OpenWebsiteConfig.serializer(), config.copy(url = it)))
             },
-            label = { Text("URL") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
+            label = "URL",
         )
         Spacer(modifier = Modifier.height(8.dp))
         SwitchRow("Open in browser", config.useBrowser) {
@@ -193,14 +192,12 @@ fun HttpRequestConfigEditor(
     var methodExpanded by remember { mutableStateOf(false) }
 
     Column {
-        OutlinedTextField(
+        MagicTextField(
             value = config.url,
             onValueChange = {
                 onConfigChanged(json.encodeToString(HttpRequestConfig.serializer(), config.copy(url = it)))
             },
-            label = { Text("URL") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
+            label = "URL",
         )
         Spacer(modifier = Modifier.height(8.dp))
         ExposedDropdownMenuBox(
@@ -233,24 +230,24 @@ fun HttpRequestConfigEditor(
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
+        MagicTextField(
             value = config.headers,
             onValueChange = {
                 onConfigChanged(json.encodeToString(HttpRequestConfig.serializer(), config.copy(headers = it)))
             },
-            label = { Text("Headers (Key: Value, one per line)") },
-            minLines = 2,
-            modifier = Modifier.fillMaxWidth(),
+            label = "Headers (Key: Value, one per line)",
+            singleLine = false,
+            maxLines = 4,
         )
         Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
+        MagicTextField(
             value = config.body,
             onValueChange = {
                 onConfigChanged(json.encodeToString(HttpRequestConfig.serializer(), config.copy(body = it)))
             },
-            label = { Text("Body") },
-            minLines = 2,
-            modifier = Modifier.fillMaxWidth(),
+            label = "Body",
+            singleLine = false,
+            maxLines = 4,
         )
         Spacer(modifier = Modifier.height(8.dp))
         OutlinedTextField(
@@ -276,14 +273,14 @@ fun SpeakTextConfigEditor(
     }
 
     Column {
-        OutlinedTextField(
+        MagicTextField(
             value = config.text,
             onValueChange = {
                 onConfigChanged(json.encodeToString(SpeakTextConfig.serializer(), config.copy(text = it)))
             },
-            label = { Text("Text to speak") },
-            minLines = 2,
-            modifier = Modifier.fillMaxWidth(),
+            label = "Text to speak",
+            singleLine = false,
+            maxLines = 4,
         )
         Spacer(modifier = Modifier.height(8.dp))
         OutlinedTextField(
@@ -328,14 +325,14 @@ fun FillClipboardConfigEditor(
     }
 
     Column {
-        OutlinedTextField(
+        MagicTextField(
             value = config.text,
             onValueChange = {
                 onConfigChanged(json.encodeToString(FillClipboardConfig.serializer(), config.copy(text = it)))
             },
-            label = { Text("Text to copy") },
-            minLines = 2,
-            modifier = Modifier.fillMaxWidth(),
+            label = "Text to copy",
+            singleLine = false,
+            maxLines = 4,
         )
     }
 }

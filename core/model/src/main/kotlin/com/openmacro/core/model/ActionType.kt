@@ -28,6 +28,30 @@ enum class ActionType(val typeId: String, val displayName: String) {
     HTTP_REQUEST("http_request", "HTTP Request"),
     SPEAK_TEXT("speak_text", "Speak Text"),
     FILL_CLIPBOARD("fill_clipboard", "Fill Clipboard"),
+
+    // Milestone 6 — Flow Control
+    IF_CLAUSE("if_clause", "If / Else"),
+    ELSE_MARKER("else_marker", "Else"),
+    REPEAT("repeat", "Repeat"),
+    BREAK("break_loop", "Break Loop"),
+    CONTINUE("continue_loop", "Continue Loop"),
+    CANCEL_MACRO("cancel_macro", "Cancel Macro"),
+    ITERATE("iterate", "Iterate"),
+    ARRAY_MANIPULATION("array_manipulation", "Array Manipulation"),
+    JSON_PARSE("json_parse", "JSON Parse"),
+    TEXT_MANIPULATION("text_manipulation", "Text Manipulation"),
+    WAIT_UNTIL_TRIGGER("wait_until_trigger", "Wait Until Trigger"),
+    RUN_ACTION_BLOCK("run_action_block", "Run Action Block"),
+
+    // Milestone 7 — Device Actions
+    SET_BRIGHTNESS("set_brightness", "Set Brightness"),
+    SCREEN_ON_OFF("screen_on_off", "Screen On/Off"),
+    FORCE_SCREEN_ROTATION("force_screen_rotation", "Force Screen Rotation"),
+    AUTO_ROTATE("auto_rotate", "Auto Rotate"),
+    DARK_THEME("dark_theme", "Dark Theme"),
+    SET_WALLPAPER("set_wallpaper", "Set Wallpaper"),
+    KEEP_DEVICE_AWAKE("keep_device_awake", "Keep Device Awake"),
+    GPS_ENABLE_DISABLE("gps_enable_disable", "GPS Enable/Disable"),
     ;
 
     companion object {

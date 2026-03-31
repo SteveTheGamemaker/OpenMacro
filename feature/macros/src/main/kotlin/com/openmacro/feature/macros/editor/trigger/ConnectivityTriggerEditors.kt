@@ -34,6 +34,7 @@ import com.openmacro.core.model.config.CallMissedConfig
 import com.openmacro.core.model.config.DataConnectivityChangeConfig
 import com.openmacro.core.model.config.RegularIntervalConfig
 import com.openmacro.core.model.config.SmsReceivedConfig
+import com.openmacro.core.model.config.SmsSentConfig
 import com.openmacro.core.model.config.WifiSsidTransitionConfig
 import com.openmacro.core.model.config.WifiStateChangeConfig
 import com.openmacro.core.ui.components.ContactPickerField
@@ -248,6 +249,27 @@ fun CallMissedConfigEditor(
                 onConfigChanged(json.encodeToString(CallMissedConfig.serializer(), config.copy(numberFilter = it)))
             },
             label = "Number filter (blank = any)",
+        )
+    }
+}
+
+@Composable
+fun SmsSentConfigEditor(
+    configJson: String,
+    onConfigChanged: (String) -> Unit,
+) {
+    val config = remember(configJson) {
+        runCatching { json.decodeFromString<SmsSentConfig>(configJson) }
+            .getOrDefault(SmsSentConfig())
+    }
+
+    Column {
+        ContactPickerField(
+            value = config.recipientFilter,
+            onValueChange = {
+                onConfigChanged(json.encodeToString(SmsSentConfig.serializer(), config.copy(recipientFilter = it)))
+            },
+            label = "Recipient filter (blank = any)",
         )
     }
 }

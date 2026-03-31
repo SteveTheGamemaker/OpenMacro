@@ -86,6 +86,11 @@ data class SmsReceivedConfig(
 )
 
 @Serializable
+data class SmsSentConfig(
+    val recipientFilter: String = "",
+)
+
+@Serializable
 data class CallIncomingConfig(
     val numberFilter: String = "",
 )
@@ -98,4 +103,111 @@ data class CallEndedConfig(
 @Serializable
 data class CallMissedConfig(
     val numberFilter: String = "",
+)
+
+// Milestone 7 — Sensors
+
+@Serializable
+data class ShakeDeviceConfig(
+    val sensitivity: Float = 12.0f, // acceleration threshold in m/s²
+    val shakeDurationMs: Long = 500,
+)
+
+@Serializable
+data class FlipDeviceConfig(
+    val onFaceDown: Boolean = true,
+    val onFaceUp: Boolean = false,
+)
+
+@Serializable
+data class ProximitySensorConfig(
+    val onNear: Boolean = true,
+    val onFar: Boolean = false,
+)
+
+@Serializable
+data class LightSensorConfig(
+    val threshold: Float = 50.0f, // lux
+    val whenBelow: Boolean = true,
+)
+
+@Serializable
+data class ScreenOrientationConfig(
+    val orientation: String = "landscape", // "portrait", "landscape"
+)
+
+@Serializable
+data class ActivityRecognitionConfig(
+    val activityType: String = "walking", // "still", "walking", "running", "driving", "cycling"
+    val confidenceThreshold: Int = 75,
+)
+
+// Milestone 7 — Device State
+
+@Serializable
+data class DeviceBootConfig(
+    val placeholder: Boolean = true,
+)
+
+@Serializable
+data class BatteryTemperatureTriggerConfig(
+    val threshold: Float = 40.0f,
+    val whenAbove: Boolean = true,
+)
+
+@Serializable
+data class BatterySaverStateConfig(
+    val onEnabled: Boolean = true,
+    val onDisabled: Boolean = false,
+)
+
+@Serializable
+data class DarkThemeChangeConfig(
+    val onDarkEnabled: Boolean = true,
+    val onDarkDisabled: Boolean = false,
+)
+
+@Serializable
+data class GpsEnabledDisabledConfig(
+    val onEnabled: Boolean = true,
+    val onDisabled: Boolean = false,
+)
+
+@Serializable
+data class DoNotDisturbConfig(
+    val onEnabled: Boolean = true,
+    val onDisabled: Boolean = false,
+)
+
+@Serializable
+data class SilentModeConfig(
+    val onSilent: Boolean = true,
+    val onNormal: Boolean = false,
+)
+
+@Serializable
+data class TorchOnOffConfig(
+    val onTorchOn: Boolean = true,
+    val onTorchOff: Boolean = false,
+)
+
+// Milestone 7 — Location
+
+@Serializable
+data class GeofenceConfig(
+    val latitude: Double = 0.0,
+    val longitude: Double = 0.0,
+    val radiusMeters: Float = 100.0f,
+    val onEnter: Boolean = true,
+    val onExit: Boolean = false,
+    val dwellTimeMs: Long = 0,
+    val locationName: String = "",
+)
+
+@Serializable
+data class LocationConfig(
+    val latitude: Double = 0.0,
+    val longitude: Double = 0.0,
+    val radiusMeters: Float = 500.0f,
+    val locationName: String = "",
 )

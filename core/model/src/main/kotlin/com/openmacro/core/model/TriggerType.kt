@@ -26,6 +26,29 @@ enum class TriggerType(val typeId: String, val displayName: String) {
     CALL_ENDED("call_ended", "Call Ended"),
     CALL_MISSED("call_missed", "Missed Call"),
     REGULAR_INTERVAL("regular_interval", "Regular Interval"),
+    SMS_SENT("sms_sent", "SMS Sent"),
+
+    // Milestone 7 — Sensors
+    SHAKE_DEVICE("shake_device", "Shake Device"),
+    FLIP_DEVICE("flip_device", "Flip Device"),
+    PROXIMITY_SENSOR("proximity_sensor", "Proximity Sensor"),
+    LIGHT_SENSOR("light_sensor", "Light Sensor"),
+    SCREEN_ORIENTATION("screen_orientation", "Screen Orientation"),
+    ACTIVITY_RECOGNITION("activity_recognition", "Activity Recognition"),
+
+    // Milestone 7 — Device State
+    DEVICE_BOOT("device_boot", "Device Boot"),
+    BATTERY_TEMPERATURE("battery_temperature", "Battery Temperature"),
+    BATTERY_SAVER_STATE("battery_saver_state", "Battery Saver State"),
+    DARK_THEME_CHANGE("dark_theme_change", "Dark Theme Change"),
+    GPS_ENABLED_DISABLED("gps_enabled_disabled", "GPS Enabled/Disabled"),
+    DO_NOT_DISTURB("do_not_disturb", "Do Not Disturb"),
+    SILENT_MODE("silent_mode", "Silent Mode"),
+    TORCH_ON_OFF("torch_on_off", "Torch On/Off"),
+
+    // Milestone 7 — Location
+    GEOFENCE("geofence", "Geofence"),
+    LOCATION("location", "Location"),
     ;
 
     companion object {

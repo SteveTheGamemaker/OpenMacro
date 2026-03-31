@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Code
+import androidx.compose.material.icons.filled.Functions
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
@@ -25,6 +26,8 @@ import androidx.navigation.compose.rememberNavController
 import com.openmacro.feature.logs.LogsScreen
 import com.openmacro.feature.macros.MacrosScreen
 import com.openmacro.feature.macros.editor.MacroEditorScreen
+import com.openmacro.feature.actionblocks.ActionBlockEditorScreen
+import com.openmacro.feature.actionblocks.ActionBlockListScreen
 import com.openmacro.feature.settings.SettingsScreen
 import com.openmacro.feature.variables.VariableManagerScreen
 import kotlinx.serialization.Serializable
@@ -33,6 +36,8 @@ import kotlinx.serialization.Serializable
 @Serializable data class MacroEditorRoute(val macroId: Long = -1L)
 @Serializable data object LogsRoute
 @Serializable data object VariablesRoute
+@Serializable data object ActionBlocksRoute
+@Serializable data class ActionBlockEditorRoute(val blockId: Long = -1L)
 @Serializable data object SettingsRoute
 
 data class TopLevelDestination(
@@ -45,6 +50,7 @@ val topLevelDestinations = listOf(
     TopLevelDestination(MacrosRoute, Icons.Default.PlayArrow, "Macros"),
     TopLevelDestination(LogsRoute, Icons.AutoMirrored.Filled.List, "Logs"),
     TopLevelDestination(VariablesRoute, Icons.Default.Code, "Variables"),
+    TopLevelDestination(ActionBlocksRoute, Icons.Default.Functions, "Blocks"),
     TopLevelDestination(SettingsRoute, Icons.Default.Settings, "Settings"),
 )
 
@@ -98,6 +104,17 @@ fun OpenMacroApp() {
             }
             composable<LogsRoute> { LogsScreen() }
             composable<VariablesRoute> { VariableManagerScreen() }
+            composable<ActionBlocksRoute> {
+                ActionBlockListScreen(
+                    onCreateBlock = { navController.navigate(ActionBlockEditorRoute()) },
+                    onEditBlock = { blockId -> navController.navigate(ActionBlockEditorRoute(blockId)) },
+                )
+            }
+            composable<ActionBlockEditorRoute> {
+                ActionBlockEditorScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                )
+            }
             composable<SettingsRoute> { SettingsScreen() }
         }
     }

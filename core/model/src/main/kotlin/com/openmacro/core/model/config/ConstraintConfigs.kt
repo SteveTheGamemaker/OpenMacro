@@ -74,3 +74,28 @@ data class AirplaneModeConstraintConfig(
 data class CallStateConstraintConfig(
     val state: String = "idle",
 )
+
+// Milestone 7
+
+@Serializable
+data class LocationConstraintConfig(
+    val latitude: Double = 0.0,
+    val longitude: Double = 0.0,
+    val radiusMeters: Float = 500.0f,
+    val locationName: String = "",
+)
+
+@Serializable
+data class HeadphonesConstraintConfig(
+    val connected: Boolean = true,
+)
+
+@Serializable
+data class DoNotDisturbConstraintConfig(
+    val enabled: Boolean = true,
+)
+
+@Serializable
+data class SilentModeConstraintConfig(
+    val silent: Boolean = true,
+)
